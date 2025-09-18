@@ -17,19 +17,6 @@ class _CartScreenState extends State<CartScreen> {
     final provider = CartProvider.of(context);
     final finalList = provider.cart;
 
-    //por cantidad
-    productoQuantity(IconData icon, int index) {
-      return GestureDetector(onTap: () {
-        setState(() {
-          icon == Icons.add 
-          ? provider.incrementoQtn(index) 
-          : provider.decrementoQtn(index);
-        });
-      },
-      child: Icon(icon, size: 20),
-      );
-    }
-
     return Scaffold(
       //para total y pago
       bottomSheet: CheckOutBox(),
@@ -58,7 +45,7 @@ class _CartScreenState extends State<CartScreen> {
           icon:const Icon(Icons.arrow_back_ios),
             ),
             const Text(
-              "Mi carrito",
+              "Libros a descargar",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 25,
@@ -120,14 +107,7 @@ class _CartScreenState extends State<CartScreen> {
                                       color: Colors.grey,
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    "S/${cartItems.price}",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                    ),
-                                  ),
+    
                                 ],
                               )
                             ],
@@ -135,8 +115,8 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                         ),
                         Positioned(
-                          top: 35,
-                          right: 35,
+                          top: 100,
+                          right: 15,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
@@ -152,34 +132,6 @@ class _CartScreenState extends State<CartScreen> {
                                 ),
                                 ),
                                 const SizedBox(height: 10),
-                                Container(
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: kcontentColor,
-                                    border: Border.all(
-                                      color: Colors.grey.shade200,
-                                      width: 2,
-                                    ),
-                                    borderRadius: BorderRadius.circular(20)
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const SizedBox(width: 10),
-                                      productoQuantity(Icons.add, index),
-                                      const SizedBox(width: 10),
-                                      Text(
-                                        cartItems.quantity.toString(),
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      productoQuantity(Icons.remove, index),
-                                      const SizedBox(width: 10),
-                                    ],
-                                  ),
-                                )
                             ],
                           ),
                           )

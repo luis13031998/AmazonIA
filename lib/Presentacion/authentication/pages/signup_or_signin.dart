@@ -49,28 +49,27 @@ class SignupOrSigninPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SvgPicture.asset(
-                    AppVector.logo,
-                  ),
+                 
                   const SizedBox(
                     height: 55,
                   ),
                   const Text(
-                    'Disfruta leyendo un libro',
+                    'colegio IE  “Albert Einstein”',
                     style: TextStyle(
-                      fontSize: 26,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 235, 180, 53)
                     ),
                   ),
                   const SizedBox(
                     height: 21,
                   ),
                   const Text(
-                    'Amazon-IA es una biblioteca virtual de compra y venta de libros.',
+                    'Para poder acceder a nuestro libros virtuales escolar primero debes registrarte y poder pertenecer a los libros virtuales.',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 15,
-                      color: Color.fromARGB(255, 237, 119, 8)
+                      color: Color.fromARGB(255, 249, 249, 248)
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -90,7 +89,7 @@ class SignupOrSigninPage extends StatelessWidget {
                             )
                             );
                           },
-                          title: 'Registrarse',
+                          title: 'Registrar',
                         ),
                       ),
                       SizedBox(
@@ -110,7 +109,7 @@ class SignupOrSigninPage extends StatelessWidget {
                           'Iniciar Sesion',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: context.isDarkMode ? Colors.white : Colors.black,
+                            color: context.isDarkMode ? Colors.white : const Color.fromARGB(255, 250, 249, 249),
                             fontSize: 16,
                           ),
                         )

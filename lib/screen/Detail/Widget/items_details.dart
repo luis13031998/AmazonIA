@@ -24,13 +24,7 @@ class ItemsDetails extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              Text(
-                "S/${producto.price}",
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 25,
-                ),
-              ),
+              
                const SizedBox(height: 10),
                //para calificacion
                Row(
@@ -79,7 +73,7 @@ class ItemsDetails extends StatelessWidget {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: "Seller: ",
+                    text: "Autor: ",
                     style: TextStyle(fontSize: 16),
                   ),
                   TextSpan(

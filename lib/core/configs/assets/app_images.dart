@@ -1,8 +1,8 @@
 class AppImages {
   static const String basePath = 'assets/images/';
-  static const String introBG = '${basePath}intro_bg.png';
-  static const String chooseModeBG = '${basePath}choose_mode_bg.png';
-  static const String authBG = '${basePath}auth_bg.png';
+  static const String introBG = '${basePath}iealbert.jpg';
+  static const String chooseModeBG = '${basePath}caminandojuntoss.png';
+  static const String authBG = '${basePath}intro_background.png';
   static const String homeArtist = '${basePath}home-artist.png';
   static const String slider = '${basePath}slider.png';
   static const String slider1 = '${basePath}slider1.png';
@@ -48,4 +48,5 @@ class AppImages {
   static const String rolexgate = '${basePath}rolex-gate.png';
   static const String teashop = '${basePath}tea-shop.png';
   static const String todosloslugares = '${basePath}lugaressecretos.png';
+  static const String perfilNino = '${basePath}perfilnino.png';
 }

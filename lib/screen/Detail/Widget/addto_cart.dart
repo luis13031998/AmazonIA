@@ -32,60 +32,15 @@ class _AddtoCartState extends State<AddtoCart> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              height: 40,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.white, width: 2),
-              ),
-              child: Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      if(currentIndex !=1){
-                        setState(() {
-                          currentIndex--;
-                        });
-                      }
-                    },
-                    iconSize: 18,
-                    icon: const Icon(
-                      Icons.remove,
-                      color: Colors.white,
-                    ),
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      currentIndex.toString(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    IconButton(
-                    onPressed: () {
-                      setState(() {
-                          currentIndex++;
-                        });
-                    },
-                    iconSize: 18,
-                    icon: const Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    ),
-                    ),
-                ],
-              ),
-            ),
+           
             GestureDetector(
               onTap: () {
                 Provider.toggleFavorite(widget.producto);
                 const snackBar = SnackBar(content: Text(
-                  "Añadido con exito!!",
+                  "Reservacion exitosa",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 25,
+                  fontSize: 24,
                   color: Colors.white,
                 ),
                 ),
@@ -100,13 +55,13 @@ class _AddtoCartState extends State<AddtoCart> {
                   borderRadius: BorderRadius.circular(50),
                 ),
                 alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 100),
                 child: const Text(
-                  "Agregar al carrito",
+                  "Reservar libro",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 20
+                    fontSize: 18
                   ),
                 ),
               ),

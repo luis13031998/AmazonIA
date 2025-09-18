@@ -59,7 +59,7 @@ class ProductCart extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Text(
-                      "S/${producto.price}",
+                      "",
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,

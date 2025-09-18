@@ -34,13 +34,12 @@ class ChooseModePage extends StatelessWidget {
               children: [
                 Align(
                   alignment: Alignment.topCenter,
-                  child: SvgPicture.asset(AppVector.logo),
                 ),
                 const Spacer(),
                 const Text(
                   'Elegir Modo',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -79,7 +78,7 @@ class ChooseModePage extends StatelessWidget {
                           'Modo Oscuro',
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
-                            fontSize: 13,
+                            fontSize: 18,
                             color: AppColors.grey,
                           ),
                         ),
@@ -116,7 +115,7 @@ class ChooseModePage extends StatelessWidget {
                           'Modo Claro',
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
-                            fontSize: 13,
+                            fontSize: 18,
                             color: AppColors.grey,
                           ),
                         ),

@@ -83,56 +83,10 @@ class _DetailScreenState extends State<DetailScreen>{
               children: [
                 //Para nombre producto, precio,calificación, vendedor
                  ItemsDetails(producto: widget.producto),
-                 const SizedBox(height: 20),
-                 const Text(
-                  "Cpolor",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold, 
-                    fontSize: 18
-                  ),
-                 ),
-                 const SizedBox(height: 20),
-                 Row(
-                  children: List.generate(
-                    widget.producto.colors.length,
-                    (index) => GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          currentColor = index;
-                        });
-                      },
-                      child: AnimatedContainer(
-                        duration: const Duration(
-                          milliseconds: 300
-                        ),
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: currentColor == index 
-                          ? Colors.white
-                          : widget.producto.colors[index],
-                        border: currentColor == index 
-                        ? Border.all(
-                          color: widget.producto.colors[index],
-                        )
-                        : null,
-                        ),
-                        padding: currentColor == index 
-                        ? const EdgeInsets.all(2)
-                        : null,
-                        margin: const EdgeInsets.only(right: 10),
-                        child: Container(
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                            color: widget.producto.colors[index],
-                            shape: BoxShape.circle
-                          ),
-                        ),
-                        ),
-                    ),
-                  ),
-                 ),
+    
+                 
+
+                 
                   const SizedBox(height: 20),
                   // para describir el producto
                   Description(description: widget.producto.description)

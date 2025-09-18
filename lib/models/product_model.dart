@@ -7,7 +7,6 @@ class Producto{
   final String image;
   final String review;
   final String seller;
-  final double price;
   final List<Color> colors;
   final String category;
   final double rate;
@@ -20,7 +19,6 @@ class Producto{
     required this.review,
     required this.description,
     required this.image,
-    required this.price,
     required this.colors,
     required this.seller,
     required this.category,
@@ -35,15 +33,14 @@ class Producto{
 final List<Producto> all = [
   Producto(
     title: "Romeo y Julieta", 
-    description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
+    description: "El libro 'Romeo y Julieta' es una de las obras más famosas de William Shakespeare y trata sobre una trágica historia de amor entre dos jóvenes pertenecientes a familias rivales.", 
     image: AppImages.Romeo, 
-    price: 15, 
     colors: [
-      Colors.black,
-      Colors.blue,
-      Colors.orange,
+      Colors.yellow,
+      Colors.yellow,
+      Colors.yellow,
     ], 
-    seller: "Tariqul isalm", 
+    seller: "Shakespare", 
     category: "Drama", 
     review: "(320 reviews)",
     rate: 4.8, 
@@ -55,7 +52,6 @@ final List<Producto> all = [
     title: "Lo que America debe a españa", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.america, 
-    price: 27, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -73,7 +69,6 @@ final List<Producto> all = [
     title: "La psicologia del dinero", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.psico, 
-    price: 35, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -91,7 +86,6 @@ final List<Producto> all = [
     title: "El dinero de la democracia", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.dinero, 
-    price: 67, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -109,7 +103,6 @@ final List<Producto> all = [
     title: "El principito", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.principito, 
-    price: 10, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -127,7 +120,6 @@ final List<Producto> all = [
     title: "Alas de onix", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.alasdeonix, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -144,7 +136,6 @@ final List<Producto> all = [
     title: "Escalera interior", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.escalerainterior, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -161,7 +152,6 @@ final List<Producto> all = [
     title: "Bitacora experimental de viajes en el tiempo", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.bitacoraexperimental, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -178,7 +168,6 @@ final List<Producto> all = [
     title: "Clavito y el xilofono magico", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.clavito, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -195,7 +184,7 @@ final List<Producto> all = [
     title: "Cuentos con valores", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.cuantosconvalores, 
-    price: 45, 
+    
     colors: [
       Colors.black,
       Colors.blue,
@@ -212,7 +201,7 @@ final List<Producto> all = [
     title: "Destroza este diario", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.destrozaestediario, 
-    price: 45, 
+    
     colors: [
       Colors.black,
       Colors.blue,
@@ -229,7 +218,7 @@ final List<Producto> all = [
     title: "Cosas olvidadas", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.albumdelascosas, 
-    price: 45, 
+    
     colors: [
       Colors.black,
       Colors.blue,
@@ -246,7 +235,6 @@ final List<Producto> all = [
     title: "El mundo maquiavelo", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.mundomaquiavelico, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -263,7 +251,6 @@ final List<Producto> all = [
     title: "En el umbral de lo desconocido", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.humbraldelodesconocido, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -280,7 +267,6 @@ final List<Producto> all = [
     title: "El tunel", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.eltunel, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -297,7 +283,6 @@ final List<Producto> all = [
     title: "Fabulas de esopo", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.fabulasdeesopo, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -314,7 +299,6 @@ final List<Producto> all = [
     title: "Kafka en la orilla", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.kafkaenlaorilla, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -331,7 +315,6 @@ final List<Producto> all = [
     title: "La generacaión ansiosa", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.lageneracion, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -348,7 +331,7 @@ final List<Producto> all = [
     title: "La revolución que cambiara todo", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.larevolucion, 
-    price: 45, 
+   
     colors: [
       Colors.black,
       Colors.blue,
@@ -365,7 +348,7 @@ final List<Producto> all = [
     title: "La dictadura de la minoria", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.ladictadura, 
-    price: 45, 
+    
     colors: [
       Colors.black,
       Colors.blue,
@@ -382,7 +365,7 @@ final List<Producto> all = [
     title: "La isla de iros", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.laislasdeoro, 
-    price: 45, 
+   
     colors: [
       Colors.black,
       Colors.blue,
@@ -399,7 +382,7 @@ final List<Producto> all = [
     title: "Memorias de un tremendo cañonazo", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.memoriadeuntremendo, 
-    price: 45, 
+    
     colors: [
       Colors.black,
       Colors.blue,
@@ -416,7 +399,7 @@ final List<Producto> all = [
     title: "Mi amigo capibara", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.miamigocapibara, 
-    price: 45, 
+     
     colors: [
       Colors.black,
       Colors.blue,
@@ -433,7 +416,7 @@ final List<Producto> all = [
     title: "Culpa", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.culpa, 
-    price: 45, 
+    
     colors: [
       Colors.black,
       Colors.blue,
@@ -450,7 +433,7 @@ final List<Producto> all = [
     title: "Victoria", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.victoria, 
-    price: 45, 
+    
     colors: [
       Colors.black,
       Colors.blue,
@@ -467,7 +450,6 @@ final List<Producto> all = [
     title: "Perú: Pais sostenible", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.perupaissostenible, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -484,7 +466,6 @@ final List<Producto> all = [
     title: "Peruanos ejemplares del siglo xx", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.peruanosejemplares, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -501,7 +482,6 @@ final List<Producto> all = [
     title: "Quien teme al genero?", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.quientemealgenero, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -518,7 +498,6 @@ final List<Producto> all = [
     title: "RolexGate", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.rolexgate, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -535,7 +514,6 @@ final List<Producto> all = [
     title: "Tea Shop", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.teashop, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -552,7 +530,6 @@ final List<Producto> all = [
     title: "Todos los lugares que mantuvimos en secreto", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.todosloslugares, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -572,7 +549,6 @@ final List<Producto> drama = [
     title: "Romeo y Julieta", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.Romeo, 
-    price: 15, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -590,7 +566,6 @@ final List<Producto> drama = [
     title: "El principito", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.principito, 
-    price: 10, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -611,7 +586,6 @@ final List<Producto> historia = [
     title: "Lo que America debe a españa", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.america, 
-    price: 27, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -632,7 +606,6 @@ final List<Producto> economia = [
     title: "La psicologia del dinero", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.psico, 
-    price: 35, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -653,7 +626,6 @@ final List<Producto> politica = [
     title: "El dinero de la democracia", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.dinero, 
-    price: 67, 
     colors: [
       Colors.black,
       Colors.blue,
@@ -674,7 +646,6 @@ final List<Producto> ciencia = [
     title: "Inteligencia artificial", 
     description: "Lorem ipsum dolor sir amet, consecturkaadakda, kjae,asdas, temasld", 
     image: AppImages.inteligenciaIA, 
-    price: 45, 
     colors: [
       Colors.black,
       Colors.blue,

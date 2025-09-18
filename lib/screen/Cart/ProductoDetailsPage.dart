@@ -30,21 +30,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     return true;
   }
 
-  void handleBuy() async {
-    bool success = await processStripePayment(widget.producto.price);
-    if (success) {
-      setState(() {
-        widget.producto.isPurchased = true;  // Actualizamos el estado
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Pago completado con éxito. Ya puedes descargar el libro.")),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("El pago falló. Inténtalo nuevamente.")),
-      );
-    }
-  }
+  
 
   void openPdf() {
     if (widget.producto.isPurchased) {
@@ -64,29 +50,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       appBar: AppBar(title: Text(widget.producto.title)),
       body: Padding(
         padding: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Image.asset(widget.producto.image),
-            SizedBox(height: 16),
-            Text(widget.producto.description),
-            SizedBox(height: 16),
-            Text("Precio: \$${widget.producto.price.toStringAsFixed(2)}"),
-            SizedBox(height: 16),
-
-            if (!widget.producto.isPurchased)
-              ElevatedButton(
-                onPressed: isProcessingPayment ? null : handleBuy,
-                child: isProcessingPayment
-                    ? CircularProgressIndicator(color: Colors.white)
-                    : Text("Comprar"),
-              )
-            else
-              ElevatedButton(
-                onPressed: openPdf,
-                child: Text("Abrir libro"),
-              ),
-          ],
-        ),
+        
       ),
     );
   }

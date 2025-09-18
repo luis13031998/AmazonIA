@@ -34,58 +34,20 @@ class _CheckOutBoxState extends State<CheckOutBox> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide.none,
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 5,
-                horizontal: 15,
-              ),
-              filled: true,
-              fillColor: kcontentColor,
-              hintText: "Ingrese código de descuento",
-              hintStyle: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey,
-              ),
-              suffixIcon: TextButton(
-                onPressed: () {
-                  // Aquí puedes manejar lógica de cupones
-                },
-                child: const Text(
-                  "Aplicar",
-                  style: TextStyle(
-                    color: kprimaryColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                "SubTotal",
+                "Cantidad libros a descargar",
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.grey,
                 ),
               ),
-              Text(
-                "S/${provider.totalPrice()}",
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              )
+              
             ],
           ),
           const SizedBox(height: 20),
@@ -95,19 +57,13 @@ class _CheckOutBoxState extends State<CheckOutBox> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                "Total",
+                "0",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(
-                "S/${provider.totalPrice()}",
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              )
+              
             ],
           ),
           const SizedBox(height: 20),
@@ -120,7 +76,7 @@ class _CheckOutBoxState extends State<CheckOutBox> {
               minimumSize: const Size(double.infinity, 55),
             ),
             child: const Text(
-              "Verificar",
+              "Descargar libro pdf",
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.white,

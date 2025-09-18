@@ -30,13 +30,7 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  double totalPrice() {
-    double total1 = 0.0;
-    for (Producto element in _cart) {
-      total1 += element.price * element.quantity;
-    }
-    return total1;
-  }
+ 
 
   /// ✅ Método para obtener el primer producto del carrito
   Producto? getFirstProduct() {

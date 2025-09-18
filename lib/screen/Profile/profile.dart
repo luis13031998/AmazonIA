@@ -11,7 +11,7 @@ class Profile extends StatelessWidget {
       body: Stack(
         children: [
           Image.asset(
-            AppImages.profile,
+            AppImages.introBG,
             fit: BoxFit.cover,
             height: size.height,
             width: size.width,
@@ -43,7 +43,7 @@ class Profile extends StatelessWidget {
                                     const CircleAvatar(
                                       radius: 42,
                                       backgroundImage:
-                                          AssetImage(AppImages.portada),
+                                          AssetImage(AppImages.perfilNino),
                                     ),
                                     Positioned(
                                       bottom: 0,
@@ -79,7 +79,7 @@ class Profile extends StatelessWidget {
                                         "AGREGAR AMIGO",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 15),
+                                            fontSize: 12),
                                       ),
                                     ),
                                     const SizedBox(width: 8),
@@ -89,12 +89,12 @@ class Profile extends StatelessWidget {
                                         color: Colors.pink,
                                       ),
                                       padding: const EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 13),
+                                          vertical: 11, horizontal: 13),
                                       child: const Text(
                                         "Seguir",
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 16,
+                                          fontSize: 12,
                                           color: Colors.white,
                                         ),
                                       ),
@@ -105,14 +105,14 @@ class Profile extends StatelessWidget {
                             ),
                             const SizedBox(height: 10),
                             const Text(
-                              "Luis Leandro",
+                              "Pepito Juanito",
                               style: TextStyle(
                                 fontWeight: FontWeight.w800,
                                 fontSize: 35,
                               ),
                             ),
                             const Text(
-                              "Programador Developer",
+                              "Alumno de 5to de primaria",
                               style: TextStyle(
                                   fontWeight: FontWeight.w800,
                                   fontSize: 16,
@@ -122,9 +122,9 @@ class Profile extends StatelessWidget {
                               height: 15,
                             ),
                             const Text(
-                              "Estudiante de 10mo ciclo con experiencia en Aplicaciones Moviles y Redes Inalambricas.",
+                              "Me encanta leer libros en mis ratos libre acompañado de mis amigos es uno de mis hobbies.",
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 13,
                               ),
                             ),
                           ],
@@ -140,8 +140,8 @@ class Profile extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             friendAndMore("AMIGOS", "24"),
-                            friendAndMore("SIGUIENDO", "86"),
-                            friendAndMore("SEGUIDORES", "175"),
+                            friendAndMore("SIGUIENDO", "28"),
+                            friendAndMore("SEGUIDORES", "134"),
                           ],
                         ),
                       ),
@@ -165,14 +165,14 @@ class Profile extends StatelessWidget {
             title,
             style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
+                fontSize: 12,
                 color: Colors.black26),
           ),
           Text(
             number,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 27,
+              fontSize: 20,
               color: Colors.black,
             ),
           )

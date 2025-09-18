@@ -36,22 +36,19 @@ class GetStartedPage extends StatelessWidget {
                children: [
                 Align(
                   alignment: Alignment.topCenter,
-                  child: SvgPicture.asset(
-                    AppVector.logo,
-                  ),
                 ),
                 const Spacer(),
                 const Text(
-                  'Disfruta leyendo los mejores libros',
+                  'Colegio IE "Albert Einstein"',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 242, 196, 15)
+                    color: Color.fromARGB(255, 243, 226, 36)
                   ),
                 ),
                 const SizedBox(height: 21,),
                 const Text(
-                  'Somos una tienda virtual de libros para todo tipo de acceso en información, podras visualizar, comprar y vender libros de tu necesidad.',
+                  'Somos un colegio que promueve la lectura virtual para todo tipo de acceso en información estudiantil, podras visualizar, preguntar y descargar libros de tu necesidad.',
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.white,
