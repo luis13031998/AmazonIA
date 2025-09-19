@@ -5,6 +5,7 @@ import 'package:spotifymusic_app/models/product_model.dart';
 class CartProvider extends ChangeNotifier {
   final List<Producto> _cart = [];
   List<Producto> get cart => _cart;
+  
 
   void toggleFavorite(Producto producto) {
     if (_cart.contains(producto)) {
@@ -29,7 +30,14 @@ class CartProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
-
+  void clearCart() {
+    cart.clear();
+    notifyListeners();
+  }
+  void removeFromCart(int index) {
+  cart.removeAt(index);
+  notifyListeners();
+  }
  
 
   /// ✅ Método para obtener el primer producto del carrito

@@ -6,22 +6,27 @@ import 'package:spotifymusic_app/Provider/cart_provider.dart';
 import 'package:spotifymusic_app/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CheckOutBox extends StatefulWidget {
+class CheckOutBox extends StatelessWidget {
   const CheckOutBox({super.key});
 
-  @override
-  State<CheckOutBox> createState() => _CheckOutBoxState();
-}
-
-class _CheckOutBoxState extends State<CheckOutBox> {
-  Map<String, dynamic>? paymentIntent;
+  Future<void> _abrirPdf(String url, BuildContext context) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("No se pudo abrir el PDF.")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final provider = CartProvider.of(context);
+    final cantidad = provider.cart.length;
 
     return Container(
-      height: 300,
+      height: 200,
       width: double.infinity,
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -34,42 +39,59 @@ class _CheckOutBoxState extends State<CheckOutBox> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Cantidad libros a descargar",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey,
-                ),
-              ),
-              
-            ],
+          const Text(
+            "Cantidad libros a descargar: ",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+            ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 1),
           const Divider(),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "0",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+          const SizedBox(height: 2),
+
+          // Cantidad centrada
+          Center(
+            child: Text(
+              "$cantidad",
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
-              
-            ],
+            ),
           ),
+
           const SizedBox(height: 20),
+
+          // Botón de descarga
           ElevatedButton(
             onPressed: () async {
-              await makePayment(context);
+              if (provider.cart.isNotEmpty) {
+                final primerLibro = provider.cart.first;
+
+                if (primerLibro.pdfUrl.isNotEmpty) {
+                  await _abrirPdf(primerLibro.pdfUrl, context);
+
+                  // 👇 Vaciar el carrito después de abrir el PDF
+                  provider.clearCart();
+
+                  // Mostrar mensaje de confirmación
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Se descargó el libro y se vació el carrito."),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Este libro no tiene PDF disponible.")),
+                  );
+                }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("No tienes libros en el carrito.")),
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: kprimaryColor,
@@ -87,111 +109,5 @@ class _CheckOutBoxState extends State<CheckOutBox> {
         ],
       ),
     );
-  }
-
-  Future<void> makePayment(BuildContext context) async {
-    try {
-      paymentIntent = await createPaymentIntent('100', 'EUR');
-
-      await Stripe.instance.initPaymentSheet(
-        paymentSheetParameters: SetupPaymentSheetParameters(
-          paymentIntentClientSecret: paymentIntent!['client_secret'],
-          style: ThemeMode.dark,
-          merchantDisplayName: 'Ikay',
-        ),
-      );
-
-      await displayPaymentSheet(context);
-    } catch (err) {
-      print("Error en makePayment: $err");
-      showErrorDialog(context, "Ocurrió un error al iniciar el pago.");
-    }
-  }
-
-  Future<void> displayPaymentSheet(BuildContext context) async {
-    try {
-      await Stripe.instance.presentPaymentSheet();
-
-      // ✅ Obtener el producto comprado
-      final producto = CartProvider.of(context, listen: false).getFirstProduct();
-
-      // ✅ Abrir el PDF automáticamente si existe
-      if (producto != null && producto.pdfUrl.isNotEmpty) {
-        await _abrirPdf(producto.pdfUrl);
-      }
-
-      showDialog(
-        context: context,
-        builder: (_) => const AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.check_circle, color: Colors.green, size: 100.0),
-              SizedBox(height: 10.0),
-              Text("¡Pago exitoso!"),
-            ],
-          ),
-        ),
-      );
-
-      paymentIntent = null;
-    } on StripeException catch (e) {
-      print('Error de Stripe: $e');
-      showErrorDialog(context, "El pago fue cancelado.");
-    } catch (e) {
-      print("Error general: $e");
-      showErrorDialog(context, "Error inesperado.");
-    }
-  }
-
-  Future<Map<String, dynamic>> createPaymentIntent(String amount, String currency) async {
-    try {
-      Map<String, dynamic> body = {
-        'amount': calculateAmount(amount),
-        'currency': currency,
-      };
-
-      var response = await http.post(
-        Uri.parse('https://api.stripe.com/v1/payment_intents'),
-        headers: {
-          'Authorization': 'Bearer $stripeSecretkey', // ⚠️ Backend en producción
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: body,
-      );
-
-      return json.decode(response.body);
-    } catch (err) {
-      throw Exception('Error al crear PaymentIntent: $err');
-    }
-  }
-
-  String calculateAmount(String amount) {
-    final calculatedAmount = (int.parse(amount)) * 100;
-    return calculatedAmount.toString();
-  }
-
-  void showErrorDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        content: Row(
-          children: [
-            const Icon(Icons.error, color: Colors.red),
-            const SizedBox(width: 10),
-            Expanded(child: Text(message)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _abrirPdf(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
-      showErrorDialog(context, "No se pudo abrir el PDF.");
-    }
   }
 }

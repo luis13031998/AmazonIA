@@ -10,24 +10,39 @@ class Favorite extends StatefulWidget {
 }
 
 class _FavoriteState extends State<Favorite> {
+  final ScrollController _scrollController = ScrollController(); // 👈 Controlador para el scroll
+
+  @override
+  void dispose() {
+    _scrollController.dispose(); // Liberar memoria
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = FavoriteProvider.of(context);
     final finalList = provider.favorites;
+
     return Scaffold(
-     backgroundColor: kcontentColor,
-     appBar: AppBar(
       backgroundColor: kcontentColor,
-      title: const Text(
-        "Favorite",
-        style: TextStyle(fontWeight: FontWeight.bold),
+      appBar: AppBar(
+        backgroundColor: kcontentColor,
+        title: const Text(
+          "Lista de libros favoritos",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
       ),
-      centerTitle: true,
-     ),
-     body: Column(
-      children: [
-       Expanded(
-                child: ListView.builder(
+      body: Column(
+        children: [
+          Expanded(
+            child: Scrollbar(
+              controller: _scrollController,
+              thumbVisibility: true, // 👈 Muestra la barra siempre
+              thickness: 6, // 👈 Grosor de la barra
+              radius: const Radius.circular(10), // 👈 Bordes redondeados
+              child: ListView.builder(
+                controller: _scrollController,
                 shrinkWrap: true,
                 itemCount: finalList.length,
                 itemBuilder: (context, index) {
@@ -44,80 +59,76 @@ class _FavoriteState extends State<Favorite> {
                           ),
                           padding: const EdgeInsets.all(10),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center, // 👈 Centrado vertical
                             children: [
+                              // Imagen
                               Container(
-                                height: 85,
+                                height: 125,
                                 width: 85,
                                 decoration: BoxDecoration(
                                   color: kcontentColor,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 padding: const EdgeInsets.all(10),
-                                child: Image.asset(
-                                  favoritItems.image,
-                                  ),
+                                child: Image.asset(favoritItems.image),
                               ),
-                             const SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    favoritItems.title,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
+                              const SizedBox(width: 10),
+
+                              // Texto centrado verticalmente
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      favoritItems.title,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    favoritItems.category,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                      color: Colors.grey.shade400,
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      favoritItems.description,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 10,
+                                        color: Colors.grey.shade400,
+                                      ),
+                                      softWrap: true,
+                                      overflow: TextOverflow.visible,
                                     ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    "",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        ),
-                        Positioned(
-                          top: 50,
-                          right: 40,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  finalList.removeAt(index);
-                                  setState(() {});
-                                }, 
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                  size: 20,
+                                  ],
                                 ),
-                                ),                             
+                              ),
                             ],
                           ),
-                          )
+                        ),
+                      ),
+                      // Botón de eliminar
+                      Positioned(
+                        top: 110,
+                        right: 20,
+                        child: IconButton(
+                          onPressed: () {
+                            finalList.removeAt(index);
+                            setState(() {});
+                          },
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                            size: 25,
+                          ),
+                        ),
+                      ),
                     ],
                   );
                 },
-                ),
-                ),
-     ],
-     ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
