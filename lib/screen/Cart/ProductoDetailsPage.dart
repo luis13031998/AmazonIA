@@ -13,24 +13,6 @@ class ProductDetailsPage extends StatefulWidget {
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
   bool isProcessingPayment = false;
 
-  // Simulación: Aquí pondrías la lógica real de Stripe
-  Future<bool> processStripePayment(double amount) async {
-    setState(() {
-      isProcessingPayment = true;
-    });
-
-    // Simula el pago: en la práctica, llama a Stripe y espera la confirmación
-    await Future.delayed(Duration(seconds: 3));
-    
-    setState(() {
-      isProcessingPayment = false;
-    });
-
-    // Retorna true si pago exitoso
-    return true;
-  }
-
-  
 
   void openPdf() {
     if (widget.producto.isPurchased) {

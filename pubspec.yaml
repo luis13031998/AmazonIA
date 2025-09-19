@@ -77,6 +77,12 @@ flutter:
   - assets/vectors/
   - assets/icons/google.png
   - assets/icons/apple.png
+  - assets/images/slider.png
+  - assets/images/slider1.png
+  - assets/images/slider2.png
+  - assets/images/slider3.png
+  - assets/images/slider4.png
+  - assets/images/slider5.png
 
   fonts:
     - family: Satoshi

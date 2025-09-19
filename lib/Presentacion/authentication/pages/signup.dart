@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:spotifymusic_app/Data/models/auth/create_user_req.dart';
 import 'package:spotifymusic_app/Dominio/usecases/auth/signup.dart';
 import 'package:spotifymusic_app/Presentacion/authentication/pages/signin.dart';

@@ -1,7 +1,4 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:http/http.dart' as http;
 import 'package:spotifymusic_app/Provider/cart_provider.dart';
 import 'package:spotifymusic_app/constants.dart';
 import 'package:url_launcher/url_launcher.dart';

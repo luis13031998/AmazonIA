@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spotifymusic_app/constants.dart';
 import 'package:spotifymusic_app/screen/Cart/cart_screen.dart';
+import 'package:spotifymusic_app/screen/ChatbotIA/chatIA.dart';
 import 'package:spotifymusic_app/screen/Home/home_screen.dart';
 import 'package:spotifymusic_app/screen/Profile/profile.dart';
 import 'package:spotifymusic_app/screen/Favorite/favorite.dart';
@@ -12,9 +13,10 @@ class BottomNavBar extends StatefulWidget{
   State<BottomNavBar> createState() => _BottomNavBarState();
 }
   class _BottomNavBarState extends State<BottomNavBar>{
-    int cuttentIndex = 2;
+    int cuttentIndex = 3;
     List screens = const[
               Scaffold(),
+              ChatScreen(),
               Favorite(),
               HomeScreen(),
               CartScreen(),
@@ -27,7 +29,7 @@ class BottomNavBar extends StatefulWidget{
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           setState(() {
-            cuttentIndex = 2;
+            cuttentIndex = 3;
           });
         },
       shape: const CircleBorder(),
@@ -53,25 +55,25 @@ class BottomNavBar extends StatefulWidget{
             IconButton(
               onPressed: (){
                 setState(() {
-                  cuttentIndex = 0;
+                  cuttentIndex = 1;
                 });
               }, 
               icon: Icon(
                 Icons.grid_view_outlined,
                 size: 30,
-                color: cuttentIndex == 0 ?kprimaryColor : Colors.grey.shade400,
+                color: cuttentIndex == 1 ?kprimaryColor : Colors.grey.shade400,
                 ),
              ),
                 IconButton(
               onPressed: (){
                 setState(() {
-                  cuttentIndex = 1;
+                  cuttentIndex = 2;
                 });
               }, 
               icon: Icon(
                 Icons.favorite_border,
                 size: 30,
-                color: cuttentIndex == 1 ?kprimaryColor : Colors.grey.shade400,
+                color: cuttentIndex == 2 ?kprimaryColor : Colors.grey.shade400,
                 ),
                 ),
                 const SizedBox(
@@ -80,25 +82,25 @@ class BottomNavBar extends StatefulWidget{
                 IconButton(
               onPressed: (){
                 setState(() {
-                  cuttentIndex = 3;
+                  cuttentIndex = 4;
                 });
               }, 
               icon: Icon(
                 Icons.shopping_cart_outlined,
                 size: 30,
-                color: cuttentIndex == 3 ?kprimaryColor : Colors.grey.shade400,
+                color: cuttentIndex == 4 ?kprimaryColor : Colors.grey.shade400,
                 ),
                 ),
                 IconButton(
               onPressed: (){
                 setState(() {
-                  cuttentIndex = 4;
+                  cuttentIndex = 5;
                 });
               }, 
               icon: Icon(
                 Icons.person,
                 size: 30,
-                color: cuttentIndex == 4 ?kprimaryColor : Colors.grey.shade400,
+                color: cuttentIndex == 5 ?kprimaryColor : Colors.grey.shade400,
                 ),
                 ),
                 ],
