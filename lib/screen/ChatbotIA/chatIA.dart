@@ -60,7 +60,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("IE ALBERT EINTEIN IA"),
+        title: Text("IE ALBERT EINSTEIN IA"),
       ),
       body: SafeArea(
         child: Padding(

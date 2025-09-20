@@ -51,7 +51,7 @@ class _MySearchBARState extends State<MySearchBAR>
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text("Resultados de búsqueda"),
+        title: const Text("Libros encontrados"),
         content: SizedBox(
           height: 200,
           width: 300,
