@@ -16,36 +16,40 @@ class _AddtoCartState extends State<AddtoCart> {
 
   @override
   Widget build(BuildContext context) {
-    final Provider = CartProvider.of(context);
+    final provider = CartProvider.of(context);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 15,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Container(
         height: 85,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),
-          color: Colors.black,
+          color: isDarkMode ? Colors.white10 : Colors.black,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 15),
         alignment: Alignment.center,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-           
             GestureDetector(
               onTap: () {
-                Provider.toggleFavorite(widget.producto);
-                const snackBar = SnackBar(content: Text(
-                  "Reservacion exitosa",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                  color: Colors.white,
-                ),
-                ),
-                duration: Duration(seconds: 1),
+                provider.toggleFavorite(widget.producto);
+
+                final snackBar = SnackBar(
+                  backgroundColor:
+                      isDarkMode ? Colors.grey[900] : Colors.black87,
+                  content: Text(
+                    "Reservación exitosa",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: isDarkMode ? Colors.white : Colors.white,
+                    ),
+                  ),
+                  duration: const Duration(seconds: 1),
                 );
+
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               },
               child: Container(
@@ -59,16 +63,16 @@ class _AddtoCartState extends State<AddtoCart> {
                 child: const Text(
                   "Reservar libro",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.white, // siempre blanco para destacar
                     fontWeight: FontWeight.bold,
-                    fontSize: 18
+                    fontSize: 18,
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
-      );
+    );
   }
 }

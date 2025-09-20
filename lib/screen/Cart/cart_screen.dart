@@ -19,9 +19,19 @@ class _CartScreenState extends State<CartScreen> {
     final provider = CartProvider.of(context);
     final finalList = provider.cart;
 
+    // Detectar modo oscuro
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    // Colores dinámicos
+    final backgroundColor = isDarkMode ? Colors.black : kcontentColor;
+    final cardColor = isDarkMode ? Colors.grey[900] : Colors.white;
+    final iconColor = isDarkMode ? Colors.grey[300] : Colors.black;
+    final titleColor = isDarkMode ? Colors.white : Colors.black;
+    final subtitleColor = isDarkMode ? Colors.grey[400] : Colors.grey;
+
     return Scaffold(
       bottomSheet: const CheckOutBox(),
-      backgroundColor: kcontentColor,
+      backgroundColor: backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -40,19 +50,21 @@ class _CartScreenState extends State<CartScreen> {
                       );
                     },
                     style: IconButton.styleFrom(
-                      backgroundColor: Colors.white,
+                      backgroundColor:
+                          isDarkMode ? Colors.grey[850] : Colors.white,
                       padding: const EdgeInsets.all(15),
                     ),
-                    icon: const Icon(Icons.arrow_back_ios),
+                    icon: Icon(Icons.arrow_back_ios, color: iconColor),
                   ),
-                  const Text(
+                  Text(
                     "Libros a descargar",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 25,
+                      color: titleColor,
                     ),
                   ),
-                  const SizedBox(),
+                  const SizedBox(width: 40), // Espaciador para centrar título
                 ],
               ),
             ),
@@ -61,9 +73,9 @@ class _CartScreenState extends State<CartScreen> {
             Expanded(
               child: Scrollbar(
                 controller: _scrollController,
-                thumbVisibility: true, // Siempre visible al hacer scroll
-                thickness: 6, // Grosor de la barra
-                radius: const Radius.circular(8), // Esquinas redondeadas
+                thumbVisibility: true,
+                thickness: 6,
+                radius: const Radius.circular(8),
                 child: ListView.builder(
                   controller: _scrollController,
                   itemCount: finalList.length,
@@ -76,8 +88,16 @@ class _CartScreenState extends State<CartScreen> {
                           child: Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: cardColor,
                               borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                if (!isDarkMode)
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.1),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 3),
+                                  )
+                              ],
                             ),
                             padding: const EdgeInsets.all(20),
                             child: Row(
@@ -88,7 +108,7 @@ class _CartScreenState extends State<CartScreen> {
                                   height: 100,
                                   width: 90,
                                   decoration: BoxDecoration(
-                                    color: kcontentColor,
+                                    color: backgroundColor,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   padding: const EdgeInsets.all(10),
@@ -104,8 +124,8 @@ class _CartScreenState extends State<CartScreen> {
                                     children: [
                                       Text(
                                         cartItems.title,
-                                        style: const TextStyle(
-                                          color: Colors.black,
+                                        style: TextStyle(
+                                          color: titleColor,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
                                         ),
@@ -115,10 +135,10 @@ class _CartScreenState extends State<CartScreen> {
                                       const SizedBox(height: 5),
                                       Text(
                                         cartItems.category,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14,
-                                          color: Colors.grey,
+                                          color: subtitleColor,
                                         ),
                                         softWrap: true,
                                         overflow: TextOverflow.ellipsis,
@@ -134,21 +154,19 @@ class _CartScreenState extends State<CartScreen> {
 
                         // Botón de eliminar
                         Positioned(
-                         top: 100,
-                         right: 15,
-                         child: IconButton(
-                         onPressed: () {
-                         // ✅ Usamos el provider para eliminar y notificar
-                         provider.removeFromCart(index);
-                         },
-    icon: const Icon(
-      Icons.delete,
-      color: Colors.red,
-      size: 22,
-    ),
-  ),
-),
-
+                          top: 100,
+                          right: 15,
+                          child: IconButton(
+                            onPressed: () {
+                              provider.removeFromCart(index);
+                            },
+                            icon: Icon(
+                              Icons.delete,
+                              color: Colors.red.shade400,
+                              size: 22,
+                            ),
+                          ),
+                        ),
                       ],
                     );
                   },

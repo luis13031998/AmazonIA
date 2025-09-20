@@ -82,8 +82,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         padding: EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: message["role"] == 'system'
-                              ? const Color.fromARGB(255, 194, 191, 191)
-                              : const Color.fromARGB(255, 184, 166, 236),
+                              ? const Color.fromARGB(255, 36, 35, 35)
+                              : const Color.fromARGB(255, 77, 29, 235),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(message["content"] ?? ''),

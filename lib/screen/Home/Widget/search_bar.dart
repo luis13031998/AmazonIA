@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:spotifymusic_app/IAllamaService.dart';
 import 'package:spotifymusic_app/models/product_model.dart'; // Assuming `all` and `Producto` are defined here
 
-// Assuming 'kcontentColor' is defined in a 'constants.dart' file
-// If not, you might need to define it or replace it with a direct color like Colors.grey[200]
-// import 'package:spotifymusic_app/constants.dart';
-
-
 class MySearchBAR extends StatefulWidget {
   const MySearchBAR({super.key});
 
@@ -14,56 +9,55 @@ class MySearchBAR extends StatefulWidget {
   State<MySearchBAR> createState() => _MySearchBARState();
 }
 
-class _MySearchBARState extends State<MySearchBAR> with SingleTickerProviderStateMixin { // <--- ADD SingleTickerProviderStateMixin
+class _MySearchBARState extends State<MySearchBAR>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
   bool _isLoading = false;
 
-  late AnimationController _animationController; // <--- ADD AnimationController
+  late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 4), // Duration of one full cycle
-    )..repeat(); // Makes the animation repeat indefinitely
+      duration: const Duration(seconds: 4),
+    )..repeat();
   }
 
   @override
   void dispose() {
-    _animationController.dispose(); // <--- Dispose the controller
+    _animationController.dispose();
     _controller.dispose();
     super.dispose();
   }
 
   List<Producto> _buscarLibrosLocales(String query) {
-    // Assuming 'all' is a global or accessible list of Producto objects
-    return all.where((producto) =>
-      producto.title.toLowerCase().contains(query.toLowerCase())
-    ).toList();
+    return all
+        .where((producto) =>
+            producto.title.toLowerCase().contains(query.toLowerCase()))
+        .toList();
   }
 
   void _searchWithAI() async {
     final query = _controller.text.trim();
     if (query.isEmpty) return;
 
-    // Reset current state and show loading
     setState(() {
       _isLoading = true;
     });
 
-    // --- LOCAL BOOK SEARCH ---
     final librosEncontrados = _buscarLibrosLocales(query);
 
     if (librosEncontrados.isNotEmpty) {
-      if (!mounted) return; // Check if widget is still in tree before showing dialog
+      if (!mounted) return;
       showDialog(
         context: context,
-        builder: (dialogContext) => AlertDialog( // Use dialogContext to avoid conflicts
+        builder: (dialogContext) => AlertDialog(
           title: const Text("Libros encontrados"),
           content: SizedBox(
-            height: 200, // Adjust height as needed
-            width: 300,  // Adjust width as needed
+            height: 200,
+            width: 300,
             child: ListView.builder(
               itemCount: librosEncontrados.length,
               itemBuilder: (context, index) {
@@ -86,18 +80,16 @@ class _MySearchBARState extends State<MySearchBAR> with SingleTickerProviderStat
       );
     }
 
-    // --- AI RECOMMENDATION ---
     try {
-      final result = await LlamaService().generateText(
-        "Recomiéndame un libro similar a: $query"
-      );
+      final result = await LlamaService()
+          .generateText("Recomiéndame un libro similar a: $query");
 
-      if (!mounted) return; // Check if widget is still in tree before showing dialog
+      if (!mounted) return;
       showDialog(
         context: context,
-        builder: (dialogContext) => AlertDialog( // Use dialogContext
+        builder: (dialogContext) => AlertDialog(
           title: const Text("Recomendación de Libro IA"),
-          content: Text(result), // This is where the UTF-8 fix in LlamaService is crucial
+          content: Text(result),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
@@ -123,7 +115,6 @@ class _MySearchBARState extends State<MySearchBAR> with SingleTickerProviderStat
         ),
       );
     } finally {
-      // Ensure loading state is false regardless of success or error
       setState(() {
         _isLoading = false;
       });
@@ -132,33 +123,36 @@ class _MySearchBARState extends State<MySearchBAR> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    // Detecta si el tema es oscuro
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
-      padding: const EdgeInsets.all(8), // Padding around the entire search bar
-      child: AnimatedBuilder( // <--- This widget rebuilds for animation
+      padding: const EdgeInsets.all(8),
+      child: AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
-          return CustomPaint( // <--- This draws the animated border
-            painter: _RainbowBorderPainter(animationValue: _animationController.value),
-            child: Container( // This is your actual search bar content
+          return CustomPaint(
+            painter: _RainbowBorderPainter(
+              animationValue: _animationController.value,
+            ),
+            child: Container(
               height: 55,
-              // No margin here, CustomPaint handles the border space
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30), // Match the RRect in painter
-                color: Colors.white, // Background color of the search bar
+                borderRadius: BorderRadius.circular(30),
+                color: isDarkMode ? Colors.grey[900] : Colors.white,
               ),
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
                 children: [
-                  // Search Icon (if you want the inner white circle)
                   Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white, // This is inside the search bar, adjust as needed
+                    decoration: BoxDecoration(
+                      color: isDarkMode ? Colors.grey[850] : Colors.white,
                       shape: BoxShape.circle,
                     ),
                     padding: const EdgeInsets.all(6),
-                    child: const Icon(
+                    child: Icon(
                       Icons.search,
-                      color: Colors.grey,
+                      color: isDarkMode ? Colors.grey[400] : Colors.grey,
                       size: 24,
                     ),
                   ),
@@ -166,25 +160,32 @@ class _MySearchBARState extends State<MySearchBAR> with SingleTickerProviderStat
                   Expanded(
                     child: TextField(
                       controller: _controller,
-                      style: const TextStyle(fontSize: 16, color: Colors.black87),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: isDarkMode ? Colors.white : Colors.black87,
+                      ),
                       onSubmitted: (_) => _searchWithAI(),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: "¿Qué libro te gustó?",
                         hintStyle: TextStyle(
-                          color: Colors.grey,
+                          color:
+                              isDarkMode ? Colors.grey[500] : Colors.grey[600],
                           fontWeight: FontWeight.w500,
                         ),
-                        border: InputBorder.none, // No border for the TextField itself
+                        border: InputBorder.none,
                         isDense: true,
-                        contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 12,
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Container( // The vertical separator
+                  Container(
                     height: 25,
                     width: 1.5,
-                    color: Colors.grey[300],
+                    color: isDarkMode ? Colors.grey[700] : Colors.grey[300],
                   ),
                   const SizedBox(width: 10),
                   _isLoading
@@ -194,7 +195,11 @@ class _MySearchBARState extends State<MySearchBAR> with SingleTickerProviderStat
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : IconButton(
-                          icon: const Icon(Icons.tune, color: Colors.grey), // Or Icons.search
+                          icon: Icon(
+                            Icons.tune,
+                            color:
+                                isDarkMode ? Colors.grey[400] : Colors.grey[700],
+                          ),
                           onPressed: _searchWithAI,
                         ),
                 ],
@@ -207,8 +212,6 @@ class _MySearchBARState extends State<MySearchBAR> with SingleTickerProviderStat
   }
 }
 
-
-// Your _RainbowBorderPainter, it remains the same and is crucial for the animation
 class _RainbowBorderPainter extends CustomPainter {
   final double animationValue;
 
@@ -219,9 +222,9 @@ class _RainbowBorderPainter extends CustomPainter {
     final rect = Offset.zero & size;
     final gradient = SweepGradient(
       startAngle: 0.0,
-      endAngle: 6.28319, // 2π radians
+      endAngle: 6.28319,
       tileMode: TileMode.repeated,
-      transform: GradientRotation(animationValue * 6.28319), // This makes it animate!
+      transform: GradientRotation(animationValue * 6.28319),
       colors: const [
         Colors.red,
         Colors.orange,
@@ -230,19 +233,18 @@ class _RainbowBorderPainter extends CustomPainter {
         Colors.blue,
         Colors.indigo,
         Colors.purple,
-        Colors.red, // For a smooth transition back to the start
+        Colors.red,
       ],
     );
 
     final paint = Paint()
-      ..shader = gradient.createShader(rect) // Use createShader here
+      ..shader = gradient.createShader(rect)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 4; // Border width
+      ..strokeWidth = 4;
 
-    // Adjust the radius for the border to match the search bar's shape
     final rrect = RRect.fromRectAndRadius(
-      rect.deflate(2), // Inset the rectangle to leave space for the border
-      const Radius.circular(30), // Match your search bar's borderRadius
+      rect.deflate(2),
+      const Radius.circular(30),
     );
 
     canvas.drawRRect(rrect, paint);

@@ -39,6 +39,7 @@ class CartProvider extends ChangeNotifier {
   notifyListeners();
   }
  
+ 
 
   /// ✅ Método para obtener el primer producto del carrito
   Producto? getFirstProduct() {

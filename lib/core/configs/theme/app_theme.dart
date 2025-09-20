@@ -49,7 +49,7 @@ static final darkTheme = ThemeData(
         filled: true,
         fillColor: Colors.transparent,
         hintStyle: TextStyle(
-          color: Color(0xffA7A7A7),
+          color: Color.fromARGB(255, 151, 148, 148),
           fontWeight: FontWeight.w500,
         ),
         contentPadding: const EdgeInsets.all(30),

@@ -10,11 +10,11 @@ class Favorite extends StatefulWidget {
 }
 
 class _FavoriteState extends State<Favorite> {
-  final ScrollController _scrollController = ScrollController(); // 👈 Controlador para el scroll
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void dispose() {
-    _scrollController.dispose(); // Liberar memoria
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -23,24 +23,39 @@ class _FavoriteState extends State<Favorite> {
     final provider = FavoriteProvider.of(context);
     final finalList = provider.favorites;
 
+    // Detectar si está en modo oscuro
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    // Colores dinámicos según tema
+    final backgroundColor = isDarkMode ? Colors.black : kcontentColor;
+    final cardColor = isDarkMode ? Colors.grey[900] : Colors.white;
+    final titleColor = isDarkMode ? Colors.white : Colors.black;
+    final descriptionColor = isDarkMode ? Colors.grey[400] : Colors.grey[600];
+
     return Scaffold(
-      backgroundColor: kcontentColor,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: kcontentColor,
-        title: const Text(
+        backgroundColor: backgroundColor,
+        title: Text(
           "Lista de libros favoritos",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: titleColor,
+          ),
         ),
         centerTitle: true,
+        iconTheme: IconThemeData(
+          color: isDarkMode ? Colors.grey[300] : Colors.white, // color dinámico
+        ),
       ),
       body: Column(
         children: [
           Expanded(
             child: Scrollbar(
               controller: _scrollController,
-              thumbVisibility: true, // 👈 Muestra la barra siempre
-              thickness: 6, // 👈 Grosor de la barra
-              radius: const Radius.circular(10), // 👈 Bordes redondeados
+              thumbVisibility: true,
+              thickness: 6,
+              radius: const Radius.circular(10),
               child: ListView.builder(
                 controller: _scrollController,
                 shrinkWrap: true,
@@ -54,19 +69,27 @@ class _FavoriteState extends State<Favorite> {
                         child: Container(
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: cardColor,
                             borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              if (!isDarkMode)
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.1),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 3),
+                                )
+                            ],
                           ),
                           padding: const EdgeInsets.all(10),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center, // 👈 Centrado vertical
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               // Imagen
                               Container(
                                 height: 125,
                                 width: 85,
                                 decoration: BoxDecoration(
-                                  color: kcontentColor,
+                                  color: backgroundColor,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 padding: const EdgeInsets.all(10),
@@ -74,7 +97,7 @@ class _FavoriteState extends State<Favorite> {
                               ),
                               const SizedBox(width: 10),
 
-                              // Texto centrado verticalmente
+                              // Texto
                               Expanded(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -82,9 +105,10 @@ class _FavoriteState extends State<Favorite> {
                                   children: [
                                     Text(
                                       favoritItems.title,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18,
+                                        color: titleColor,
                                       ),
                                     ),
                                     const SizedBox(height: 5),
@@ -93,7 +117,7 @@ class _FavoriteState extends State<Favorite> {
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 10,
-                                        color: Colors.grey.shade400,
+                                        color: descriptionColor,
                                       ),
                                       softWrap: true,
                                       overflow: TextOverflow.visible,
@@ -114,9 +138,9 @@ class _FavoriteState extends State<Favorite> {
                             finalList.removeAt(index);
                             setState(() {});
                           },
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.delete,
-                            color: Colors.red,
+                            color: Colors.red.shade400,
                             size: 25,
                           ),
                         ),

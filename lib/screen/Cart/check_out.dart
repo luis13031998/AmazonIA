@@ -22,39 +22,56 @@ class CheckOutBox extends StatelessWidget {
     final provider = CartProvider.of(context);
     final cantidad = provider.cart.length;
 
+    // Detecta si está en Dark Mode
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    final backgroundColor = isDarkMode ? Colors.grey[900] : Colors.white;
+    final textColor = isDarkMode ? Colors.grey[300] : Colors.grey;
+    final cantidadColor = isDarkMode ? Colors.white : Colors.black;
+    final dividerColor = isDarkMode ? Colors.grey[700] : Colors.grey[300];
+
     return Container(
       height: 200,
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: const BorderRadius.only(
           topRight: Radius.circular(30),
           topLeft: Radius.circular(30),
         ),
+        boxShadow: [
+          if (!isDarkMode)
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+        ],
       ),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             "Cantidad libros a descargar: ",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.grey,
+              color: textColor,
             ),
           ),
           const SizedBox(height: 1),
-          const Divider(),
+          Divider(color: dividerColor),
           const SizedBox(height: 2),
 
           // Cantidad centrada
           Center(
             child: Text(
               "$cantidad",
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: cantidadColor,
               ),
             ),
           ),
@@ -70,18 +87,18 @@ class CheckOutBox extends StatelessWidget {
                 if (primerLibro.pdfUrl.isNotEmpty) {
                   await _abrirPdf(primerLibro.pdfUrl, context);
 
-                  // 👇 Vaciar el carrito después de abrir el PDF
                   provider.clearCart();
 
-                  // Mostrar mensaje de confirmación
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text("Se descargó el libro y se vació el carrito."),
+                      content:
+                          Text("Se descargó el libro y se vació el carrito."),
                     ),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Este libro no tiene PDF disponible.")),
+                    const SnackBar(
+                        content: Text("Este libro no tiene PDF disponible.")),
                   );
                 }
               } else {
@@ -93,6 +110,9 @@ class CheckOutBox extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: kprimaryColor,
               minimumSize: const Size(double.infinity, 55),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             child: const Text(
               "Descargar libro pdf",
