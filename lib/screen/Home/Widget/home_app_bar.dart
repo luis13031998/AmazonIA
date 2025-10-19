@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:spotifymusic_app/Provider/cart_provider.dart';
 import '../../../constants.dart';
 
 class CustomAppBar extends StatelessWidget {
@@ -9,6 +10,7 @@ class CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
+    final provider = CartProvider.of(context);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,27 +80,85 @@ class CustomAppBar extends StatelessWidget {
         Expanded(
           child: Center(
             child: Image.asset(
-              "assets/images/logoinicial.png", // 👈 tu logo aquí
+              "assets/images/logosanta.png",
               height: 60,
               fit: BoxFit.contain,
             ),
           ),
         ),
 
-        // Botón de notificaciones
-        IconButton(
-          style: IconButton.styleFrom(
-            backgroundColor: isDarkMode ? Colors.grey[850] : kcontentColor,
-            padding: const EdgeInsets.all(20),
-          ),
-          onPressed: () {},
-          iconSize: 30,
-          icon: Icon(
-            Icons.notifications_outlined,
-            color: isDarkMode
-                ? Colors.grey[300]
-                : const Color.fromRGBO(24, 20, 20, 1),
-          ),
+        // Botón de notificaciones con badge
+        Stack(
+          children: [
+            IconButton(
+              style: IconButton.styleFrom(
+                backgroundColor: isDarkMode ? Colors.grey[850] : kcontentColor,
+                padding: const EdgeInsets.all(20),
+              ),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text("Notificaciones"),
+                    content: provider.notifications.isEmpty
+                        ? const Text("No tienes notificaciones todavía.")
+                        : Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: provider.notifications
+                                .map((msg) => ListTile(
+                                      leading: const Icon(Icons.book),
+                                      title: Text(msg),
+                                    ))
+                                .toList(),
+                          ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          provider.clearNotifications(); // 👉 limpia todas
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Limpiar"),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              iconSize: 30,
+              icon: Icon(
+                Icons.notifications_outlined,
+                color: isDarkMode
+                    ? Colors.grey[300]
+                    : const Color.fromRGBO(24, 20, 20, 1),
+              ),
+            ),
+
+            // 🔴 Badge con contador
+            if (provider.notifications.isNotEmpty)
+              Positioned(
+                right: 8,
+                top: 8,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 18,
+                    minHeight: 18,
+                  ),
+                  child: Text(
+                    "${provider.notifications.length}",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+          ],
         ),
       ],
     );

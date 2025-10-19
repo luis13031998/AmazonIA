@@ -4,7 +4,6 @@ import 'package:spotifymusic_app/models/product_model.dart';
 import 'package:spotifymusic_app/screen/Detail/Widget/addto_cart.dart';
 import 'package:spotifymusic_app/screen/Detail/Widget/description.dart';
 import 'package:spotifymusic_app/screen/Detail/Widget/detail_app_bar.dart';
-import 'package:spotifymusic_app/screen/Detail/Widget/image_slider.dart';
 import 'package:spotifymusic_app/screen/Detail/Widget/items_details.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -29,30 +28,39 @@ class _DetailScreenState extends State<DetailScreen> {
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      // FAB para agregar al carrito
+
+      // 🛒 FAB para agregar al carrito
       floatingActionButton: AddtoCart(producto: widget.producto),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // AppBar con botón atrás, compartir y favorito
+              // 🔙 AppBar con botón atrás, compartir y favorito
               DetailAppBAR(producto: widget.producto),
 
-              // Slider de imágenes
-              MyImageSlider(
-                image: widget.producto.image,
-                onChange: (index) {
-                  setState(() {
-                    currentImage = index;
-                  });
-                },
+              // 🖼️ Imagen principal con animación Hero
+              Center(
+                child: Hero(
+                  // ✅ TAG único y consistente con ProductCart
+                  tag: '${widget.producto.image}_${widget.producto.title}',
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.asset(
+                      widget.producto.image,
+                      height: 250,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
 
-              // Indicadores de slider
+              // 🔘 Indicadores (puedes mantener el efecto)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
@@ -75,7 +83,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
               const SizedBox(height: 20),
 
-              // Contenedor con detalles del producto
+              // 📦 Contenedor con detalles del libro
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -94,12 +102,12 @@ class _DetailScreenState extends State<DetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Detalles: nombre, precio, rating, vendedor
+                    // 🏷️ Detalles (nombre, autor, etc.)
                     ItemsDetails(producto: widget.producto),
 
                     const SizedBox(height: 20),
 
-                    // Descripción
+                    // 📝 Descripción
                     Description(description: widget.producto.description),
                   ],
                 ),

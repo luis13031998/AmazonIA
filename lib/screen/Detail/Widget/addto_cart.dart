@@ -40,7 +40,7 @@ class _AddtoCartState extends State<AddtoCart> {
                   backgroundColor:
                       isDarkMode ? Colors.grey[900] : Colors.black87,
                   content: Text(
-                    "Reservación exitosa",
+                    "Reservación exitosa ✅",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,

@@ -4,8 +4,10 @@ import 'package:spotifymusic_app/models/product_model.dart';
 
 class CartProvider extends ChangeNotifier {
   final List<Producto> _cart = [];
+  final List<String> _notifications = []; // 🔹 Lista de notificaciones
+
   List<Producto> get cart => _cart;
-  
+  List<String> get notifications => _notifications; // 🔹 Getter para notificaciones
 
   void toggleFavorite(Producto producto) {
     if (_cart.contains(producto)) {
@@ -30,16 +32,16 @@ class CartProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
   void clearCart() {
     cart.clear();
     notifyListeners();
   }
+
   void removeFromCart(int index) {
-  cart.removeAt(index);
-  notifyListeners();
+    cart.removeAt(index);
+    notifyListeners();
   }
- 
- 
 
   /// ✅ Método para obtener el primer producto del carrito
   Producto? getFirstProduct() {
@@ -47,6 +49,18 @@ class CartProvider extends ChangeNotifier {
       return _cart.first;
     }
     return null;
+  }
+
+  /// 🔹 Agregar una notificación
+  void addNotification(String message) {
+    _notifications.add(message);
+    notifyListeners();
+  }
+
+  /// 🔹 Limpiar todas las notificaciones (ej: al leerlas)
+  void clearNotifications() {
+    _notifications.clear();
+    notifyListeners();
   }
 
   static CartProvider of(

@@ -87,18 +87,23 @@ class CheckOutBox extends StatelessWidget {
                 if (primerLibro.pdfUrl.isNotEmpty) {
                   await _abrirPdf(primerLibro.pdfUrl, context);
 
+                  // 🔹 Agregamos una notificación con el título del libro
+                  provider.addNotification(
+                    "Se ha descargado el libro ${primerLibro.title}",
+                  );
+
                   provider.clearCart();
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content:
-                          Text("Se descargó el libro y se vació el carrito."),
+                    SnackBar(
+                      content: Text(
+                          "Se descargó el libro '${primerLibro.title}' y se vació el carrito."),
                     ),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                        content: Text("Este libro no tiene PDF disponible.")),
+                        content: Text("❌ Este libro no tiene PDF disponible.")),
                   );
                 }
               } else {
@@ -115,7 +120,7 @@ class CheckOutBox extends StatelessWidget {
               ),
             ),
             child: const Text(
-              "Descargar libro pdf",
+              "Descargar libro pdf ⏏️",
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.white,

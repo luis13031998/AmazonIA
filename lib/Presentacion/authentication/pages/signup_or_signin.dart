@@ -54,7 +54,7 @@ class SignupOrSigninPage extends StatelessWidget {
                     height: 55,
                   ),
                   const Text(
-                    'colegio IE  “Albert Einstein”',
+                    'IE  “Rosa de Santa Maria”',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,

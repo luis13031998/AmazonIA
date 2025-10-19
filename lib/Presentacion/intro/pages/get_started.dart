@@ -37,7 +37,7 @@ class GetStartedPage extends StatelessWidget {
                 ),
                 const Spacer(),
                 const Text(
-                  'Colegio IE "Albert Einstein"',
+                  'Colegio IE "Rosa de Santa Maria"',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

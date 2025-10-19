@@ -1,17 +1,14 @@
 class AppImages {
   static const String basePath = 'assets/images/';
-  static const String introBG = '${basePath}iealbert.jpg';
+  static const String introBG = '${basePath}colegio.png';
   static const String chooseModeBG = '${basePath}caminandojuntoss.png';
   static const String authBG = '${basePath}intro_background.png';
   static const String homeArtist = '${basePath}home-artist.png';
   static const String sliderBienvenida = '${basePath}slider-bienvenida.png';
-  static const String slider3 = '${basePath}slider3.png';
-  static const String slider4 = '${basePath}slider4.png';
-  static const String slider5 = '${basePath}slider5.png';
-  static const String slider6 = '${basePath}slider6.png';
-  static const String slider = '${basePath}prueba1.png';
-  static const String slider1 = '${basePath}slider1.png';
-  static const String slider2 = '${basePath}slider2.png';
+  static const String slider3 = '${basePath}sllider3.png';
+  static const String slider = '${basePath}sllider.png';
+  static const String slider1 = '${basePath}sllider1.png';
+  static const String slider2 = '${basePath}sllider2.png';
   static const String capas = '${basePath}capas.png';
   static const String profile = '${basePath}portada.png';
   static const String portada = '${basePath}perfil.png';

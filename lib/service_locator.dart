@@ -13,6 +13,7 @@ import 'package:spotifymusic_app/data/repository/song/song_repository_impl.dart'
 
 final sl = GetIt.instance;
 
+
 Future<void> initializeDependencies() async {
   // Registro de servicios Firebase
   sl.registerSingleton<AuthFirebaseService>(

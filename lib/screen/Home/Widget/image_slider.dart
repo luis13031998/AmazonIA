@@ -23,10 +23,9 @@ class _ImageSliderState extends State<ImageSlider> {
 
   final List<String> _images = [
     AppImages.slider,
+    AppImages.slider1,
+    AppImages.slider2,
     AppImages.slider3,
-    AppImages.slider4,
-    AppImages.slider5,
-    AppImages.slider6,
   ];
 
   @override

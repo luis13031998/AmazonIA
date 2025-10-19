@@ -4,15 +4,91 @@ import 'package:spotifymusic_app/Dominio/usecases/auth/signup.dart';
 import 'package:spotifymusic_app/Presentacion/authentication/pages/signin.dart';
 import 'package:spotifymusic_app/common/widgets/button/basic_app_button.dart';
 import 'package:spotifymusic_app/core/configs/assets/app_images.dart';
-import 'package:spotifymusic_app/screen/nav_bar_screen.dart';
 import 'package:spotifymusic_app/service_locator.dart';
 
-class SignupPage extends StatelessWidget {
-  SignupPage({super.key});
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
 
+  @override
+  State<SignupPage> createState() => _SignupPageState();
+}
+
+class _SignupPageState extends State<SignupPage> {
   final TextEditingController _fullName = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
+
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _fullName.dispose();
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleSignup() async {
+    // Validación de campos vacíos
+    if (_fullName.text.trim().isEmpty ||
+        _email.text.trim().isEmpty ||
+        _password.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor, completa todos los campos.'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    print('👉 Iniciando registro...');
+    final result = await sl<SignupUseCase>().call(
+      params: CreateUserReq(
+        fullName: _fullName.text.trim(),
+        email: _email.text.trim(),
+        password: _password.text.trim(),
+      ),
+    );
+
+    print('Resultado del signup: $result');
+    setState(() => _isLoading = false);
+
+    result.fold(
+      (error) {
+        // Error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      },
+      (_) {
+        // Éxito
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('✅ Usuario creado correctamente'),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
+
+        // Redirección con seguridad
+        if (mounted) {
+          Future.delayed(const Duration(seconds: 2), () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) =>  SigninPage()),
+            );
+          });
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,246 +97,37 @@ class SignupPage extends StatelessWidget {
       extendBody: true,
       bottomNavigationBar: Container(
         color: Colors.transparent,
-        child: _siginText(context),
+        child: _signinText(context),
       ),
-      body: SizedBox.expand(
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            // Imagen de fondo
-            Image.asset(
-              AppImages.authBG,
-              fit: BoxFit.cover,
-            ),
-
-            // Capa semi-transparente
-            Container(
-              color: Colors.black.withOpacity(0.3),
-            ),
-
-            // Contenido principal
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 50, horizontal: 30),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      _registerText(),
-                      const SizedBox(height: 50),
-                      _fullNameField(context),
-                      const SizedBox(height: 20),
-                      _emailField(context),
-                      const SizedBox(height: 20),
-                      _passwordField(context),
-                      const SizedBox(height: 20),
-                      BasicAppButton(
-                        onPressed: () async {
-                          var result = await sl<SignupUseCase>().call(
-                            params: CreateUserReq(
-                              fullName: _fullName.text,
-                              email: _email.text,
-                              password: _password.text,
-                            ),
-                          );
-                          result.fold(
-                            (l) {
-                              var snackbar = SnackBar(content: Text(l));
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackbar);
-                            },
-                            (r) {
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const BottomNavBar(),
-                                ),
-                                (route) => false,
-                              );
-                            },
-                          );
-                        },
-                        title: 'Crear cuenta',
-                      ),
-                      const SizedBox(height: 20),
-                      _orDivider(),
-                      const SizedBox(height: 20),
-                      _socialLoginButtons(),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _registerText() {
-    return const Text(
-      'Registro',
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 25,
-        color: Colors.white,
-      ),
-      textAlign: TextAlign.center,
-    );
-  }
-
-  Widget _fullNameField(BuildContext context) {
-    return TextField(
-      controller: _fullName,
-      decoration: InputDecoration(
-        hintText: 'Nombre Completo',
-        hintStyle: const TextStyle(color: Colors.white70),
-        filled: true,
-        fillColor: Colors.white.withOpacity(0.2),
-        contentPadding: const EdgeInsets.all(30),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
-      ).applyDefaults(Theme.of(context).inputDecorationTheme),
-      style: const TextStyle(color: Colors.white),
-    );
-  }
-
-  Widget _emailField(BuildContext context) {
-    return TextField(
-      controller: _email,
-      decoration: InputDecoration(
-        hintText: 'Ingresar Correo',
-        hintStyle: const TextStyle(color: Colors.white70),
-        filled: true,
-        fillColor: Colors.white.withOpacity(0.2),
-        contentPadding: const EdgeInsets.all(30),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
-      ).applyDefaults(Theme.of(context).inputDecorationTheme),
-      style: const TextStyle(color: Colors.white),
-    );
-  }
-
-  Widget _passwordField(BuildContext context) {
-    return TextField(
-      controller: _password,
-      obscureText: true,
-      decoration: InputDecoration(
-        hintText: 'Contraseña',
-        hintStyle: const TextStyle(color: Colors.white70),
-        filled: true,
-        fillColor: Colors.white.withOpacity(0.2),
-        contentPadding: const EdgeInsets.all(30),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
-      ).applyDefaults(Theme.of(context).inputDecorationTheme),
-      style: const TextStyle(color: Colors.white),
-    );
-  }
-
-  Widget _orDivider() {
-    return Row(
-      children: [
-        const Expanded(
-          child: Divider(
-            color: Colors.white70,
-            thickness: 1,
-            endIndent: 10,
-          ),
-        ),
-        const Text(
-          "O",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const Expanded(
-          child: Divider(
-            color: Colors.white70,
-            thickness: 1,
-            indent: 10,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _socialLoginButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        GestureDetector(
-          onTap: () {
-            // TODO: lógica login con Google
-          },
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.2),
-            ),
-            child: Image.asset(
-              'assets/icons/google.png', // Asegúrate de agregar en pubspec.yaml
-              height: 30,
-              width: 30,
-            ),
-          ),
-        ),
-        const SizedBox(width: 30),
-        GestureDetector(
-          onTap: () {
-            // TODO: lógica login con Apple
-          },
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.2),
-            ),
-            child: Image.asset(
-              'assets/icons/apple.png',
-              height: 30,
-              width: 30,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _siginText(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: Stack(
+        fit: StackFit.expand,
         children: [
-          const Text(
-            '¿Tienes una cuenta?',
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: Colors.white,
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (BuildContext context) => SigninPage()),
-              );
-            },
-            child: const Text(
-              'Iniciar sesión',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                color: Color.fromARGB(255, 237, 231, 39),
+          // Fondo
+          Image.asset(AppImages.authBG, fit: BoxFit.cover),
+          Container(color: Colors.black.withOpacity(0.4)),
+
+          // Contenido principal
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _registerText(),
+                  const SizedBox(height: 50),
+                  _fullNameField(context),
+                  const SizedBox(height: 20),
+                  _emailField(context),
+                  const SizedBox(height: 20),
+                  _passwordField(context),
+                  const SizedBox(height: 30),
+                  _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : BasicAppButton(
+                          onPressed: _handleSignup,
+                          title: 'Crear cuenta',
+                        ),
+                ],
               ),
             ),
           ),
@@ -268,4 +135,90 @@ class SignupPage extends StatelessWidget {
       ),
     );
   }
+
+  // ------------------ WIDGETS ------------------
+
+  Widget _registerText() => const Text(
+        'Registro',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 28,
+          color: Colors.white,
+        ),
+        textAlign: TextAlign.center,
+      );
+
+  Widget _fullNameField(BuildContext context) => TextField(
+        controller: _fullName,
+        textInputAction: TextInputAction.next,
+        decoration: _inputDecoration(context, 'Nombre completo'),
+        style: const TextStyle(color: Colors.white),
+      );
+
+  Widget _emailField(BuildContext context) => TextField(
+        controller: _email,
+        textInputAction: TextInputAction.next,
+        keyboardType: TextInputType.emailAddress,
+        decoration: _inputDecoration(context, 'Correo electrónico'),
+        style: const TextStyle(color: Colors.white),
+      );
+
+  Widget _passwordField(BuildContext context) => TextField(
+        controller: _password,
+        obscureText: true,
+        textInputAction: TextInputAction.done,
+        decoration: _inputDecoration(context, 'Contraseña'),
+        style: const TextStyle(color: Colors.white),
+      );
+
+  InputDecoration _inputDecoration(BuildContext context, String hint) =>
+      InputDecoration(
+        hintText: hint,
+        hintStyle: const TextStyle(color: Colors.white70),
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.2),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: const BorderSide(color: Colors.yellowAccent, width: 2),
+        ),
+      );
+
+  Widget _signinText(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 30),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              '¿Tienes una cuenta?',
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                color: Colors.white,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) =>  SigninPage()),
+                );
+              },
+              child: const Text(
+                'Iniciar sesión',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  color: Color.fromARGB(255, 255, 230, 0),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
 }

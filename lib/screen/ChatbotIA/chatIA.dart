@@ -60,7 +60,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("IE ALBERT EINSTEIN IA"),
+        title: Text("IE ROSA DE SANTA MARIA - IA"),
       ),
       body: SafeArea(
         child: Padding(
@@ -82,7 +82,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         padding: EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: message["role"] == 'system'
-                              ? const Color.fromARGB(255, 36, 35, 35)
+                              ? const Color.fromARGB(255, 24, 88, 1)
                               : const Color.fromARGB(255, 77, 29, 235),
                           borderRadius: BorderRadius.circular(8),
                         ),

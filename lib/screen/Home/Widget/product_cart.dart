@@ -8,6 +8,7 @@ import 'package:spotifymusic_app/Presentacion/choose_mode/bloc/theme_cubit.dart'
 
 class ProductCart extends StatelessWidget {
   final Producto producto;
+
   const ProductCart({super.key, required this.producto});
 
   @override
@@ -16,10 +17,10 @@ class ProductCart extends StatelessWidget {
 
     return BlocBuilder<ThemeCubit, ThemeMode>(
       builder: (context, themeMode) {
-        // Colores dinámicos según el tema
+        // 🎨 Colores dinámicos según el tema
         final cardColor = themeMode == ThemeMode.dark
             ? Colors.grey[850] // Fondo oscuro
-            : kcontentColor; // Fondo claro (color original)
+            : kcontentColor; // Fondo claro original
 
         final textColor =
             themeMode == ThemeMode.dark ? Colors.white : Colors.black;
@@ -47,7 +48,8 @@ class ProductCart extends StatelessWidget {
                     const SizedBox(height: 5),
                     Center(
                       child: Hero(
-                        tag: producto.image,
+                        // ✅ TAG ÚNICO para evitar colisiones
+                        tag: '${producto.image}_${producto.title}',
                         child: Image.asset(
                           producto.image,
                           width: 150,
@@ -64,7 +66,7 @@ class ProductCart extends StatelessWidget {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
-                          color: textColor, // 👈 Color dinámico
+                          color: textColor,
                         ),
                       ),
                     ),
@@ -77,7 +79,7 @@ class ProductCart extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
-                            color: textColor, // 👈 Color dinámico
+                            color: textColor,
                           ),
                         ),
                         Row(
@@ -99,7 +101,7 @@ class ProductCart extends StatelessWidget {
                   ],
                 ),
               ),
-              // Ícono favorito
+              // ❤️ Ícono de favorito
               Positioned(
                 child: Align(
                   alignment: Alignment.topRight,

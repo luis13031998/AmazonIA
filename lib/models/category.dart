@@ -16,23 +16,23 @@ final List<Category> categoriasList = [
     image: AppImages.all,
   ),
   Category(
-    title: "Drama",
+    title: "Matematica",
     image: AppImages.drama,
   ),
   Category(
-    title: "Historia",
+    title: "Comunicacion",
     image: AppImages.historia,
   ),
   Category(
-    title: "Politica",
+    title: "Ciencia",
     image: AppImages.politica,
   ),
   Category(
-    title: "Economia",
+    title: "Historia",
     image: AppImages.economia,
   ),
   Category(
-    title: "Ciencia",
+    title: "CTA",
     image: AppImages.ciencia,
   ),
 ];
