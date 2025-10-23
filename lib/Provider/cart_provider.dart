@@ -21,6 +21,13 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+void removeNotificationAt(int index) {
+  if (index >= 0 && index < _notifications.length) {
+    _notifications.removeAt(index);
+    notifyListeners();
+  }
+}
+
   void incrementoQtn(int index) {
     _cart[index].quantity++;
     notifyListeners();

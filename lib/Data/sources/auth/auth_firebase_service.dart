@@ -51,10 +51,10 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
           message = 'No existe una cuenta con ese correo.';
           break;
         case 'wrong-password':
-          message = 'Contraseña incorrecta.';
+          message = 'Ingresar credenciales para iniciar sesion ‼️.';
           break;
         default:
-          message = 'Error al iniciar sesión: ${e.message}';
+          message = 'Contraseña incorrecta ❌: ${e.message}';
       }
       return Left(message);
     } catch (e) {

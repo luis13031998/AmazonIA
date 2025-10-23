@@ -28,23 +28,18 @@ class _DetailScreenState extends State<DetailScreen> {
 
     return Scaffold(
       backgroundColor: backgroundColor,
-
-      // 🛒 FAB para agregar al carrito
       floatingActionButton: AddtoCart(producto: widget.producto),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 🔙 AppBar con botón atrás, compartir y favorito
               DetailAppBAR(producto: widget.producto),
 
-              // 🖼️ Imagen principal con animación Hero
+              // 🖼️ Imagen principal
               Center(
                 child: Hero(
-                  // ✅ TAG único y consistente con ProductCart
                   tag: '${widget.producto.image}_${widget.producto.title}',
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
@@ -60,7 +55,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
               const SizedBox(height: 15),
 
-              // 🔘 Indicadores (puedes mantener el efecto)
+              // 🔘 Indicadores
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
@@ -83,7 +78,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
               const SizedBox(height: 20),
 
-              // 📦 Contenedor con detalles del libro
+              // 📦 Detalles del libro
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -102,13 +97,17 @@ class _DetailScreenState extends State<DetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 🏷️ Detalles (nombre, autor, etc.)
                     ItemsDetails(producto: widget.producto),
-
                     const SizedBox(height: 20),
 
-                    // 📝 Descripción
-                    Description(description: widget.producto.description),
+                    // 📝 Pestañas dinámicas
+                    Description(
+                      description: widget.producto.description,
+                      dowlands:
+                          "Este libro ha sido descargado 3 veces.",
+                      reviews:
+                          "Excelente obra de Shakespeare. Muy recomendada por los lectores.",
+                    ),
                   ],
                 ),
               ),

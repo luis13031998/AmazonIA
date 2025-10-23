@@ -15,7 +15,7 @@ class CustomAppBar extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Botón de salida
+        // 🔸 Botón de salida
         IconButton(
           style: IconButton.styleFrom(
             backgroundColor: isDarkMode ? Colors.grey[850] : kcontentColor,
@@ -52,7 +52,7 @@ class CustomAppBar extends StatelessWidget {
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 241, 114, 10),
+                        backgroundColor: const Color(0xFFF1720A),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -76,7 +76,7 @@ class CustomAppBar extends StatelessWidget {
           ),
         ),
 
-        // Logo en el centro
+        // 🔹 Logo centrado
         Expanded(
           child: Center(
             child: Image.asset(
@@ -87,7 +87,7 @@ class CustomAppBar extends StatelessWidget {
           ),
         ),
 
-        // Botón de notificaciones con badge
+        // 🔔 Botón de notificaciones moderno
         Stack(
           children: [
             IconButton(
@@ -96,31 +96,143 @@ class CustomAppBar extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
               ),
               onPressed: () {
-                showDialog(
+                // ⬇️ Bottom Sheet moderno
+                showModalBottomSheet(
                   context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text("Notificaciones"),
-                    content: provider.notifications.isEmpty
-                        ? const Text("No tienes notificaciones todavía.")
-                        : Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: provider.notifications
-                                .map((msg) => ListTile(
-                                      leading: const Icon(Icons.book),
-                                      title: Text(msg),
-                                    ))
-                                .toList(),
-                          ),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          provider.clearNotifications(); // 👉 limpia todas
-                          Navigator.pop(context);
-                        },
-                        child: const Text("Limpiar"),
-                      ),
-                    ],
+                  backgroundColor:
+                      isDarkMode ? Colors.grey[900] : Colors.white,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(25)),
                   ),
+                  isScrollControlled: true,
+                  builder: (context) {
+                    return Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // 🔸 Título
+                          Row(
+                            children: [
+                              const Icon(Icons.notifications_active,
+                                  color: Color(0xFFF1720A), size: 28),
+                              const SizedBox(width: 8),
+                              Text(
+                                "Notificaciones",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDarkMode
+                                      ? Colors.white
+                                      : Colors.black87,
+                                ),
+                              ),
+                              const Spacer(),
+                              if (provider.notifications.isNotEmpty)
+                                IconButton(
+                                  onPressed: () {
+                                    provider.clearNotifications();
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(Icons.delete_outline,
+                                      color: Colors.redAccent),
+                                  tooltip: "Borrar todas",
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+
+                          // 📨 Contenido
+                          provider.notifications.isEmpty
+                              ? Center(
+                                  child: Column(
+                                    children: const [
+                                      Icon(Icons.notifications_off_outlined,
+                                          color: Colors.grey, size: 60),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        "No tienes notificaciones todavía.",
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                      SizedBox(height: 20),
+                                    ],
+                                  ),
+                                )
+                              : ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: provider.notifications.length,
+                                  itemBuilder: (context, index) {
+                                    final msg = provider.notifications[index];
+                                    return AnimatedContainer(
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      curve: Curves.easeInOut,
+                                      child: Card(
+                                        color: isDarkMode
+                                            ? Colors.grey[850]
+                                            : const Color(0xFFF9F9F9),
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 6),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: ListTile(
+                                          leading: const Icon(
+                                            Icons.notifications,
+                                            color: Color(0xFFF1720A),
+                                          ),
+                                          title: Text(
+                                            msg,
+                                            style: TextStyle(
+                                              color: isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black87,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          trailing: IconButton(
+                                            icon: const Icon(Icons.close,
+                                                color: Colors.grey),
+                                            onPressed: () {
+                                              provider.removeNotificationAt(
+                                                  index);
+                                              Navigator.pop(context);
+                                              // vuelve a abrir actualizado
+                                              Future.delayed(
+                                                const Duration(
+                                                    milliseconds: 100),
+                                                () => showModalBottomSheet(
+                                                  context: context,
+                                                  backgroundColor: isDarkMode
+                                                      ? Colors.grey[900]
+                                                      : Colors.white,
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.vertical(
+                                                      top:
+                                                          Radius.circular(25),
+                                                    ),
+                                                  ),
+                                                  builder: (_) =>
+                                                      const SizedBox(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    );
+                  },
                 );
               },
               iconSize: 30,

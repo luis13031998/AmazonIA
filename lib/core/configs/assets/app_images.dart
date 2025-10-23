@@ -1,8 +1,9 @@
 class AppImages {
   static const String basePath = 'assets/images/';
-  static const String introBG = '${basePath}colegio.png';
-  static const String chooseModeBG = '${basePath}caminandojuntoss.png';
-  static const String authBG = '${basePath}intro_background.png';
+  static const String introBG = '${basePath}get_start.png';
+  static const String chooseModeBG = '${basePath}chosemode.png';
+  static const String authBG = '${basePath}fondoinicio.png';
+  static const String authBG1 = '${basePath}fondologin.png';
   static const String homeArtist = '${basePath}home-artist.png';
   static const String sliderBienvenida = '${basePath}slider-bienvenida.png';
   static const String slider3 = '${basePath}sllider3.png';

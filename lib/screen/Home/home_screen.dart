@@ -48,13 +48,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// 🔹 Obtener lista de productos según categoría
-List<Producto> _getProductsByCategory(String category) {
-  if (category == "All") {
-    // ✅ Devuelve directamente la lista 'all' sin duplicados
-    return all;
+  List<Producto> _getProductsByCategory(String category) {
+    if (category == "All") {
+      return all;
+    }
+    return categorias[category] ?? [];
   }
-  return categorias[category] ?? [];
-}
 
   @override
   Widget build(BuildContext context) {
@@ -70,30 +69,62 @@ List<Producto> _getProductsByCategory(String category) {
           body: isLoading
               ? const Center(
                   child: CircularProgressIndicator(
-                      color: Color.fromARGB(255, 233, 191, 64)),
+                    color: Color.fromARGB(255, 233, 191, 64),
+                  ),
                 )
               : SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 35),
                         const CustomAppBar(),
                         const SizedBox(height: 20),
+
+                        /// 🔹 Barra de búsqueda
                         const MySearchBAR(),
                         const SizedBox(height: 20),
 
-                        /// 🔹 SLIDER DE IMÁGENES
+                        /// 🔹 Slider de imágenes
                         ImageSlider(
                           currentSlide: currentSlider,
                           onChange: (value) {
                             setState(() => currentSlider = value);
                           },
                         ),
+                        const SizedBox(height: 25),
+
+                        /// 🔹 Encabezado general
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Explora tus libros favoritos 📚",
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w800,
+                                color: textColor,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              "Selecciona una categoría para comenzar",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: themeMode == ThemeMode.dark
+                                    ? Colors.grey[400]
+                                    : Colors.grey[700],
+                              ),
+                            ),
+                          ],
+                        ),
+
                         const SizedBox(height: 20),
 
-                        /// 🔹 LISTA DE CATEGORÍAS
+                        /// 🔹 Lista de categorías
                         SizedBox(
                           height: 120,
                           child: SingleChildScrollView(
@@ -127,7 +158,7 @@ List<Producto> _getProductsByCategory(String category) {
                                       boxShadow: selectedIndex == index
                                           ? [
                                               BoxShadow(
-                                                color: Colors.greenAccent
+                                                color: Colors.orange
                                                     .withOpacity(0.4),
                                                 blurRadius: 8,
                                                 offset: const Offset(0, 3),
@@ -175,35 +206,39 @@ List<Producto> _getProductsByCategory(String category) {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 10),
 
-                        /// 🔹 TÍTULO DE SECCIÓN
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Libros de ${categoryNames[selectedIndex]}",
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w800,
-                                color: textColor,
+                        const SizedBox(height: 25),
+
+                        /// 🔹 Título de sección
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Libros de ${categoryNames[selectedIndex]}",
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800,
+                                  color: textColor,
+                                ),
                               ),
-                            ),
-                            Text(
-                              "Ver todo",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15,
-                                color: themeMode == ThemeMode.dark
-                                    ? Colors.grey[300]
-                                    : Colors.black54,
+                              const SizedBox(height: 4),
+                              Text(
+                                "Explora los mejores títulos en esta categoría",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: themeMode == ThemeMode.dark
+                                      ? Colors.grey[400]
+                                      : Colors.grey[700],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 15),
 
-                        /// 🔹 GRID DE PRODUCTOS
+                        /// 🔹 Grid de productos
                         Builder(
                           builder: (context) {
                             final selectedCategory =
@@ -242,8 +277,9 @@ List<Producto> _getProductsByCategory(String category) {
                                     if (producto.pdfUrl.isEmpty) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  "El PDF no está disponible.")));
+                                        content:
+                                            Text("El PDF no está disponible."),
+                                      ));
                                       return;
                                     }
                                     Navigator.push(

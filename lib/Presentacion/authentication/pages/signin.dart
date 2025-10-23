@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -13,110 +14,188 @@ import 'package:spotifymusic_app/Presentacion/authentication/pages/signup.dart';
 import 'package:spotifymusic_app/Presentacion/authentication/pages/forgot_password.dart';
 import 'package:spotifymusic_app/common/widgets/button/basic_app_button.dart';
 import 'package:spotifymusic_app/core/configs/assets/app_images.dart';
+import 'package:spotifymusic_app/core/configs/assets/app_vector.dart';
 import 'package:spotifymusic_app/screen/nav_bar_screen.dart';
 import 'package:spotifymusic_app/service_locator.dart';
 
 class SigninPage extends StatelessWidget {
-   SigninPage({super.key}); // ✅ se usa const
+  SigninPage({super.key});
 
-  // controladores (no pueden ser const)
-  final TextEditingController _email =  TextEditingController();
-  final TextEditingController _password =  TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final double topPadding = MediaQuery.of(context).padding.top + 20;
+
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      extendBody: true,
-      bottomNavigationBar: Container(
-        color: Colors.transparent,
-        child: _signupText(context),
-      ),
       body: Stack(
-        fit: StackFit.expand,
         children: [
-          // Fondo
-          Image.asset(AppImages.authBG, fit: BoxFit.cover),
-          Container(color: Colors.black.withOpacity(0.3)),
+          // Fondo decorativo
+          Align(
+            alignment: Alignment.topRight,
+            child: SvgPicture.asset(AppVector.topPattern, fit: BoxFit.cover),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: SvgPicture.asset(AppVector.bottomPattern, fit: BoxFit.cover),
+          ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Image.asset(AppImages.authBG1, fit: BoxFit.cover),
+          ),
 
-          SafeArea(
-            child: SingleChildScrollView(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 50, horizontal: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _titleText(),
-                  const SizedBox(height: 50),
-                  _emailField(context),
-                  const SizedBox(height: 20),
-                  _passwordField(context),
-                  const SizedBox(height: 20),
+          // Contenido principal
+          Align(
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 80),
+                    const Text(
+                      'Iniciar Sesión',
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 228, 131, 12),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Accede a los libros virtuales de tu institución',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 15,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 40),
 
-                  // Botón iniciar sesión
-                  BasicAppButton(
-                    onPressed: () async {
-                      final result = await sl<SigninUseCase>().call(
-                        params: SigninUserReq(
-                          email: _email.text.trim(),
-                          password: _password.text.trim(),
+                    // Campos
+                    _inputField(_email, 'Correo electrónico'),
+                    const SizedBox(height: 20),
+                    _inputField(_password, 'Contraseña', isPassword: true),
+                    const SizedBox(height: 30),
+
+                    // Botón principal
+                    BasicAppButton(
+                      onPressed: () async {
+                        final result = await sl<SigninUseCase>().call(
+                          params: SigninUserReq(
+                            email: _email.text.trim(),
+                            password: _password.text.trim(),
+                          ),
+                        );
+
+                        result.fold(
+                          (error) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(error),
+                                backgroundColor: Colors.redAccent,
+                              ),
+                            );
+                          },
+                          (_) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content:
+                                    Text('✅ Inicio de sesión exitoso'),
+                                backgroundColor: Colors.green,
+                                behavior: SnackBarBehavior.floating,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+
+                            Future.delayed(const Duration(seconds: 2), () {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const BottomNavBar()),
+                                (route) => false,
+                              );
+                            });
+                          },
+                        );
+                      },
+                      title: 'Iniciar Sesión',
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Olvidó contraseña
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const ForgotPasswordPage()),
+                        );
+                      },
+                      child: const Text(
+                        '¿Olvidaste tu contraseña?',
+                        style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
+                    _divider(),
+                    const SizedBox(height: 25),
+
+                    // Botones sociales
+                    _socialLoginButtons(context),
+                    const SizedBox(height: 25),
+
+                    // Texto para registrarse
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          '¿No tienes una cuenta?',
+                          style: TextStyle(color: Colors.white, fontSize: 15),
                         ),
-                      );
-
-                      result.fold(
-                        (error) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(error),
-                              backgroundColor: Colors.redAccent,
-                            ),
-                          );
-                        },
-                        (_) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('✅ Inicio de sesión exitoso'),
-                              backgroundColor: Colors.green,
-                              behavior: SnackBarBehavior.floating,
-                              duration: Duration(seconds: 2),
-                            ),
-                          );
-
-                          Future.delayed(const Duration(seconds: 2), () {
-                            Navigator.pushAndRemoveUntil(
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => const BottomNavBar()),
-                              (route) => false,
+                                  builder: (_) => const SignupPage()),
                             );
-                          });
-                        },
-                      );
-                    },
-                    title: 'Iniciar Sesión',
-                  ),
-
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const ForgotPasswordPage(),
+                          },
+                          child: const Text(
+                            'Regístrate aquí',
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 228, 131, 12),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
+                          ),
                         ),
-                      );
-                    },
-                    child: const Text(
-                      '¿Olvidaste tu contraseña?',
-                      style: TextStyle(color: Colors.white70),
+                      ],
                     ),
-                  ),
+                    const SizedBox(height: 30),
+                  ],
+                ),
+              ),
+            ),
+          ),
 
-                  const SizedBox(height: 20),
-                  _orDivider(),
-                  const SizedBox(height: 20),
-
-                  _socialLoginButtons(context),
-                ],
+          // Botón de retroceso
+          Positioned(
+            top: topPadding,
+            left: 20,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.7),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.arrow_back,
+                    color: Colors.white, size: 22),
               ),
             ),
           ),
@@ -125,153 +204,69 @@ class SigninPage extends StatelessWidget {
     );
   }
 
-  // ------------------- Widgets UI -------------------
+  // ---------------- Widgets Reutilizables ----------------
 
-  Widget _titleText() => const Text(
-        'Iniciar Sesión',
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 25,
-          color: Colors.white,
+  Widget _inputField(TextEditingController controller, String hint,
+      {bool isPassword = false}) {
+    return TextField(
+      controller: controller,
+      obscureText: isPassword,
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: const TextStyle(color: Colors.white70),
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.2),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 25, vertical: 18),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide.none,
         ),
-        textAlign: TextAlign.center,
-      );
+      ),
+      style: const TextStyle(color: Colors.white),
+    );
+  }
 
-  Widget _emailField(BuildContext context) => TextField(
-        controller: _email,
-        decoration: InputDecoration(
-          hintText: 'Ingresa tu correo',
-          hintStyle: const TextStyle(color: Colors.white70),
-          filled: true,
-          fillColor: Colors.white.withOpacity(0.2),
-          contentPadding: const EdgeInsets.all(30),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ).applyDefaults(Theme.of(context).inputDecorationTheme),
-        style: const TextStyle(color: Colors.white),
-        keyboardType: TextInputType.emailAddress,
-      );
-
-  Widget _passwordField(BuildContext context) => TextField(
-        controller: _password,
-        obscureText: true,
-        decoration: InputDecoration(
-          hintText: 'Contraseña',
-          hintStyle: const TextStyle(color: Colors.white70),
-          filled: true,
-          fillColor: Colors.white.withOpacity(0.2),
-          contentPadding: const EdgeInsets.all(30),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ).applyDefaults(Theme.of(context).inputDecorationTheme),
-        style: const TextStyle(color: Colors.white),
-      );
-
-  Widget _orDivider() => const Row(
+  Widget _divider() => const Row(
         children: [
           Expanded(
-            child: Divider(
-              color: Colors.white70,
-              thickness: 1,
-              endIndent: 10,
-            ),
-          ),
-          Text(
-            "O",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+              child: Divider(color: Colors.white54, thickness: 1, endIndent: 10)),
+          Text("O",
+              style: TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
           Expanded(
-            child: Divider(
-              color: Colors.white70,
-              thickness: 1,
-              indent: 10,
-            ),
-          ),
+              child: Divider(color: Colors.white54, thickness: 1, indent: 10)),
         ],
       );
-
-  Widget _signupText(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 30),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              '¿No eres miembro?',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => const SignupPage()),
-                );
-              },
-              child: const Text(
-                'Regístrate ahora',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                  color: Color.fromARGB(255, 237, 231, 39),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-
-  // ------------------- Social Login -------------------
 
   Widget _socialLoginButtons(BuildContext context) => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Google
-          GestureDetector(
+          _socialButton(
+            asset: 'assets/icons/google.png',
             onTap: () async => await _entrarConGoogle(context),
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.2),
-              ),
-              child: Image.asset(
-                'assets/icons/google.png',
-                height: 30,
-                width: 30,
-              ),
-            ),
           ),
           const SizedBox(width: 30),
-
-          // Apple (solo visible en iOS)
-          Offstage(
-            offstage: !Platform.isIOS,
-            child: GestureDetector(
+          if (Platform.isIOS)
+            _socialButton(
+              asset: 'assets/icons/apple.png',
               onTap: () async => await _entrarConApple(context),
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.2),
-                ),
-                child: Image.asset(
-                  'assets/icons/apple.png',
-                  height: 30,
-                  width: 30,
-                ),
-              ),
             ),
-          ),
         ],
       );
+
+  Widget _socialButton({required String asset, required Function() onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white.withOpacity(0.25),
+        ),
+        child: Image.asset(asset, height: 30, width: 30),
+      ),
+    );
+  }
 
   // ------------------- Google Login -------------------
 
@@ -280,9 +275,7 @@ class SigninPage extends StatelessWidget {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) return null;
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
+      final googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,

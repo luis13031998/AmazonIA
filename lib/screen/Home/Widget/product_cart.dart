@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotifymusic_app/Provider/favorite_provider.dart';
 import 'package:spotifymusic_app/constants.dart';
-import 'package:spotifymusic_app/models/product_model.dart';
+import 'package:spotifymusic_app/models/product_model.dart'; // 👈 Aquí está buildStarRating()
 import 'package:spotifymusic_app/screen/Detail/detail_screen.dart';
 import 'package:spotifymusic_app/Presentacion/choose_mode/bloc/theme_cubit.dart';
 
@@ -19,8 +19,8 @@ class ProductCart extends StatelessWidget {
       builder: (context, themeMode) {
         // 🎨 Colores dinámicos según el tema
         final cardColor = themeMode == ThemeMode.dark
-            ? Colors.grey[850] // Fondo oscuro
-            : kcontentColor; // Fondo claro original
+            ? Colors.grey[850]
+            : kcontentColor;
 
         final textColor =
             themeMode == ThemeMode.dark ? Colors.white : Colors.black;
@@ -48,7 +48,6 @@ class ProductCart extends StatelessWidget {
                     const SizedBox(height: 5),
                     Center(
                       child: Hero(
-                        // ✅ TAG ÚNICO para evitar colisiones
                         tag: '${producto.image}_${producto.title}',
                         child: Image.asset(
                           producto.image,
@@ -70,34 +69,30 @@ class ProductCart extends StatelessWidget {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 8),
+
+                    /// ⭐️ Sección de estrellas amarillas dinámicas
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: buildStarRating(producto.rate),
+                    ),
+
                     const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Text(
-                          "", // Aquí podrías poner precio si lo tienes
+                          "", // Aquí puedes agregar el precio si lo tienes
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                             color: textColor,
                           ),
                         ),
-                        Row(
-                          children: List.generate(
-                            producto.colors.length,
-                            (index) => Container(
-                              width: 15,
-                              height: 15,
-                              margin: const EdgeInsets.only(right: 4),
-                              decoration: BoxDecoration(
-                                color: producto.colors[index],
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                          ),
-                        ),
+                        // 🔸 Ya no usamos producto.colors, las estrellas lo reemplazan
                       ],
                     ),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),

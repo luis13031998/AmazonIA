@@ -46,6 +46,8 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>To scan cards</string>
+    <string>Necesito usar la cámara para tomar una foto de perfil.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>Necesito acceder a tus fotos para cambiar tu imagen de perfil.</string>
 </dict>
 </plist>

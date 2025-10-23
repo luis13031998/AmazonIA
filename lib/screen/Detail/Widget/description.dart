@@ -1,74 +1,97 @@
 import 'package:flutter/material.dart';
-import 'package:spotifymusic_app/constants.dart';
 
-class Description extends StatelessWidget {
+class Description extends StatefulWidget {
   final String description;
-  const Description({super.key, required this.description});
+  final String dowlands;
+  final String reviews;
+
+  const Description({
+    Key? key,
+    required this.description,
+    required this.dowlands,
+    required this.reviews,
+  }) : super(key: key);
+
+  @override
+  State<Description> createState() => _DescriptionState();
+}
+
+class _DescriptionState extends State<Description> {
+  String selectedTab = 'descripcion';
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    String textToShow = '';
+    if (selectedTab == 'descripcion') {
+      textToShow = widget.description;
+    } else if (selectedTab == 'descargas') {
+      textToShow = widget.dowlands;
+    } else if (selectedTab == 'reseñas') {
+      textToShow = widget.reviews;
+    }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Encabezado con 3 secciones
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // Botón "Descripción" (seleccionado)
-            Container(
-              width: 120,
-              height: 40,
-              decoration: BoxDecoration(
-                color: kprimaryColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                "Descripción",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 🔸 Fila con desplazamiento horizontal para evitar overflow
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildTabButton("Descripción", 'descripcion'),
+                const SizedBox(width: 8),
+                _buildTabButton("N° de Descargas", 'descargas'),
+                const SizedBox(width: 8),
+                _buildTabButton("Reseñas", 'reseñas'),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // 🔸 Contenido dinámico
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: Text(
+              key: ValueKey<String>(selectedTab),
+              textToShow,
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 15,
+                height: 1.5,
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
 
-            // Texto "Especificación"
-            Text(
-              "Especificación",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: isDark ? Colors.grey[300] : Colors.black,
-              ),
-            ),
-
-            // Texto "Reseñas"
-            Text(
-              "Reseñas",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: isDark ? Colors.grey[300] : Colors.black,
-              ),
-            ),
-          ],
-        ),
-
-        const SizedBox(height: 20),
-
-        // Texto de descripción
-        Text(
-          description,
-          style: TextStyle(
-            fontSize: 16,
-            color: isDark ? Colors.grey[400] : Colors.grey,
-            height: 1.5,
+  // 🔸 Botón de pestaña reutilizable
+  Widget _buildTabButton(String text, String tabKey) {
+    final bool isSelected = selectedTab == tabKey;
+    return GestureDetector(
+      onTap: () => setState(() => selectedTab = tabKey),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.orange : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? Colors.orange : Colors.white24,
           ),
         ),
-      ],
+        child: Text(
+          text,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: isSelected ? Colors.white : Colors.white70,
+          ),
+        ),
+      ),
     );
   }
 }

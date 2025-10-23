@@ -18,6 +18,7 @@ dependencies:
   url_launcher: ^6.3.0
   google_sign_in: ^5.4.1
   sign_in_with_apple: ^4.1.0
+  image_picker: ^1.1.2
   crypto: ^3.0.2
   flutter_svg:
   flutter_bloc:
@@ -33,6 +34,7 @@ dependencies:
   cloud_firestore:
   rename_app: ^1.6.5
   flutter_launcher_icons: ^0.14.4
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

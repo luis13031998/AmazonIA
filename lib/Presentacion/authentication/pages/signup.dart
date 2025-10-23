@@ -29,7 +29,6 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   Future<void> _handleSignup() async {
-    // Validación de campos vacíos
     if (_fullName.text.trim().isEmpty ||
         _email.text.trim().isEmpty ||
         _password.text.trim().isEmpty) {
@@ -44,7 +43,6 @@ class _SignupPageState extends State<SignupPage> {
 
     setState(() => _isLoading = true);
 
-    print('👉 Iniciando registro...');
     final result = await sl<SignupUseCase>().call(
       params: CreateUserReq(
         fullName: _fullName.text.trim(),
@@ -53,12 +51,10 @@ class _SignupPageState extends State<SignupPage> {
       ),
     );
 
-    print('Resultado del signup: $result');
     setState(() => _isLoading = false);
 
     result.fold(
       (error) {
-        // Error
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(error),
@@ -67,7 +63,6 @@ class _SignupPageState extends State<SignupPage> {
         );
       },
       (_) {
-        // Éxito
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('✅ Usuario creado correctamente'),
@@ -77,21 +72,20 @@ class _SignupPageState extends State<SignupPage> {
           ),
         );
 
-        // Redirección con seguridad
-        if (mounted) {
-          Future.delayed(const Duration(seconds: 2), () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) =>  SigninPage()),
-            );
-          });
-        }
+        Future.delayed(const Duration(seconds: 2), () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) =>  SigninPage()),
+          );
+        });
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final double topPadding = MediaQuery.of(context).padding.top + 20;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBody: true,
@@ -103,7 +97,7 @@ class _SignupPageState extends State<SignupPage> {
         fit: StackFit.expand,
         children: [
           // Fondo
-          Image.asset(AppImages.authBG, fit: BoxFit.cover),
+          Image.asset(AppImages.authBG1, fit: BoxFit.cover),
           Container(color: Colors.black.withOpacity(0.4)),
 
           // Contenido principal
@@ -128,6 +122,30 @@ class _SignupPageState extends State<SignupPage> {
                           title: 'Crear cuenta',
                         ),
                 ],
+              ),
+            ),
+          ),
+
+          // 🔹 Botón circular de retroceso (igual al de SigninPage)
+          Positioned(
+            top: topPadding,
+            left: 20,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.7),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                  size: 22,
+                ),
               ),
             ),
           ),
@@ -185,7 +203,7 @@ class _SignupPageState extends State<SignupPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
-          borderSide: const BorderSide(color: Colors.yellowAccent, width: 2),
+          borderSide: const BorderSide(color: Color.fromARGB(255, 228, 131, 12), width: 2),
         ),
       );
 
@@ -214,7 +232,7 @@ class _SignupPageState extends State<SignupPage> {
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
-                  color: Color.fromARGB(255, 255, 230, 0),
+                  color: Color.fromARGB(255, 228, 131, 12),
                 ),
               ),
             ),

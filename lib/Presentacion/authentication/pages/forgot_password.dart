@@ -83,7 +83,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ? const CircularProgressIndicator(color: Colors.white)
                 : ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.yellow[700],
+                      backgroundColor: Color.fromARGB(255, 228, 131, 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
