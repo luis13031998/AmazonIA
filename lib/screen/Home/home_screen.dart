@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocBuilder<ThemeCubit, ThemeMode>(
       builder: (context, themeMode) {
         final backgroundColor =
-            themeMode == ThemeMode.dark ? Colors.black : Colors.white;
+            themeMode == ThemeMode.dark ? Colors.black : const Color.fromARGB(255, 64, 22, 22);
         final textColor =
             themeMode == ThemeMode.dark ? Colors.white : Colors.black;
 

@@ -81,7 +81,7 @@ class CustomAppBar extends StatelessWidget {
           child: Center(
             child: Image.asset(
               "assets/images/logosanta.png",
-              height: 60,
+              height: 100,
               fit: BoxFit.contain,
             ),
           ),

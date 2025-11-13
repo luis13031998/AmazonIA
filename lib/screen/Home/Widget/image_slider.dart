@@ -22,10 +22,10 @@ class _ImageSliderState extends State<ImageSlider> {
   int _currentPage = 0;
 
   final List<String> _images = [
-    AppImages.slider,
-    AppImages.slider1,
-    AppImages.slider2,
-    AppImages.slider3,
+    AppImages.slider11,
+    AppImages.slider12,
+    AppImages.slider13,
+    AppImages.slider14,
   ];
 
   @override

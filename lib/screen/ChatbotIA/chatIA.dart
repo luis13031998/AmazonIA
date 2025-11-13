@@ -94,7 +94,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     try {
       final request =
-          http.Request('POST', Uri.parse("http://localhost:11434/api/chat"))
+          http.Request('POST', Uri.parse("http://10.0.2.2:11434/api/chat"))
             ..headers["Content-Type"] = "application/json"
             ..body = json.encode(data);
 
