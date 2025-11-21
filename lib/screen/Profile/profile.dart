@@ -26,39 +26,35 @@ class _ProfileState extends State<Profile> {
     _cargarDatos();
   }
 
-  // 🧩 Cargar datos guardados localmente
   Future<void> _cargarDatos() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       nombre = prefs.getString('nombre') ?? nombre;
       descripcion = prefs.getString('descripcion') ?? descripcion;
       grado = prefs.getString('grado') ?? grado;
-      String? pathPerfil = prefs.getString('fotoPerfil');
-      String? pathPortada = prefs.getString('fotoPortada');
-      if (pathPerfil != null && File(pathPerfil).existsSync()) {
-        fotoPerfil = File(pathPerfil);
-      }
-      if (pathPortada != null && File(pathPortada).existsSync()) {
-        fotoPortada = File(pathPortada);
-      }
+
+      String? p1 = prefs.getString('fotoPerfil');
+      String? p2 = prefs.getString('fotoPortada');
+
+      if (p1 != null && File(p1).existsSync()) fotoPerfil = File(p1);
+      if (p2 != null && File(p2).existsSync()) fotoPortada = File(p2);
     });
   }
 
-  // 💾 Guardar cambios
   Future<void> _guardarDatos() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('nombre', nombre);
-    await prefs.setString('descripcion', descripcion);
-    await prefs.setString('grado', grado);
-    if (fotoPerfil != null) await prefs.setString('fotoPerfil', fotoPerfil!.path);
-    if (fotoPortada != null) await prefs.setString('fotoPortada', fotoPortada!.path);
+    prefs.setString('nombre', nombre);
+    prefs.setString('descripcion', descripcion);
+    prefs.setString('grado', grado);
+
+    if (fotoPerfil != null) prefs.setString('fotoPerfil', fotoPerfil!.path);
+    if (fotoPortada != null) prefs.setString('fotoPortada', fotoPortada!.path);
   }
 
   Future<void> _editarPerfil() async {
-    TextEditingController nombreController = TextEditingController(text: nombre);
-    TextEditingController descripcionController =
-        TextEditingController(text: descripcion);
-    TextEditingController gradoController = TextEditingController(text: grado);
+    final nombreController = TextEditingController(text: nombre);
+    final descripcionController = TextEditingController(text: descripcion);
+    final gradoController = TextEditingController(text: grado);
 
     await showModalBottomSheet(
       context: context,
@@ -96,13 +92,14 @@ class _ProfileState extends State<Profile> {
                       descripcion = descripcionController.text;
                       grado = gradoController.text;
                     });
-                    await _guardarDatos(); // 🔥 Guarda los cambios
+                    await _guardarDatos();
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
                   child: const Text("Guardar cambios"),
                 ),
@@ -128,7 +125,7 @@ class _ProfileState extends State<Profile> {
           fotoPerfil = File(imagen.path);
         }
       });
-      await _guardarDatos(); // 🔥 Guarda la nueva imagen
+      _guardarDatos();
     }
   }
 
@@ -147,11 +144,13 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDarkMode ? Colors.white : Colors.black;
-    final subtitleColor = isDarkMode
-        ? Colors.amberAccent
-        : const Color.fromARGB(221, 251, 167, 21);
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final titleColor = isDark ? Colors.white : Colors.black;
+    final bioColor = isDark ? Colors.grey[300] : Colors.black87;
+    final subtitleColor =
+        isDark ? Colors.amberAccent : const Color.fromARGB(221, 251, 167, 21);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -160,8 +159,12 @@ class _ProfileState extends State<Profile> {
           GestureDetector(
             onTap: () => _cambiarFoto(true),
             child: fotoPortada != null
-                ? Image.file(fotoPortada!,
-                    fit: BoxFit.cover, height: size.height, width: size.width)
+                ? Image.file(
+                    fotoPortada!,
+                    fit: BoxFit.cover,
+                    height: size.height,
+                    width: size.width,
+                  )
                 : Image.asset(
                     AppImages.introBG,
                     fit: BoxFit.cover,
@@ -174,10 +177,9 @@ class _ProfileState extends State<Profile> {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Card(
-                color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
+                    borderRadius: BorderRadius.circular(15)),
                 child: Container(
                   height: size.height * 0.4,
                   padding:
@@ -189,7 +191,6 @@ class _ProfileState extends State<Profile> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            // Foto perfil
                             Stack(
                               children: [
                                 GestureDetector(
@@ -212,22 +213,26 @@ class _ProfileState extends State<Profile> {
                                       shape: BoxShape.circle,
                                       color: Color.fromARGB(255, 95, 225, 99),
                                     ),
-                                    child: const Icon(Icons.check,
-                                        color: Colors.white, size: 20),
+                                    child: const Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                             IconButton(
-                              icon: const Icon(Icons.edit, color: Colors.pink),
+                              icon: Icon(
+                                Icons.edit,
+                                color: isDark ? Colors.white : Colors.black,
+                              ),
                               onPressed: _editarPerfil,
                             ),
                           ],
                         ),
                       ),
                       const SizedBox(height: 10),
-
-                      // Nombre y grado alineados
                       Padding(
                         padding: const EdgeInsets.only(left: 20),
                         child: Column(
@@ -236,17 +241,17 @@ class _ProfileState extends State<Profile> {
                             Text(
                               nombre,
                               style: TextStyle(
-                                fontWeight: FontWeight.w800,
                                 fontSize: 28,
-                                color: textColor,
+                                fontWeight: FontWeight.bold,
+                                color: titleColor,
                               ),
                             ),
-                            const SizedBox(height: 2),
+                            const SizedBox(height: 3),
                             Text(
                               grado,
                               style: TextStyle(
-                                fontWeight: FontWeight.w800,
                                 fontSize: 16,
+                                fontWeight: FontWeight.w600,
                                 color: subtitleColor,
                               ),
                             ),
@@ -258,50 +263,47 @@ class _ProfileState extends State<Profile> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Text(
                           descripcion,
-                          textAlign: TextAlign.left,
                           style: TextStyle(
                             fontSize: 13,
-                            color:
-                                isDarkMode ? Colors.grey[300] : Colors.black87,
+                            color: bioColor,
                           ),
                         ),
                       ),
                       const Spacer(),
                       Divider(
-                        color: isDarkMode ? Colors.white12 : Colors.black12,
-                      ),
+                          color: isDark ? Colors.white12 : Colors.black12),
                       SizedBox(
                         height: 65,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: const [
+                          children: [
                             _FriendAndMore(
                               title: "AMIGOS",
                               number: "24",
-                              textColor: Color.fromARGB(255, 248, 245, 245),
-                              subtitleColor: Color.fromARGB(248, 238, 152, 31),
+                              textColor: titleColor,
+                              subtitleColor: subtitleColor,
                             ),
                             _FriendAndMore(
                               title: "SIGUIENDO",
                               number: "28",
-                              textColor: Color.fromARGB(255, 248, 245, 245),
-                              subtitleColor: Color.fromARGB(248, 238, 152, 31),
+                              textColor: titleColor,
+                              subtitleColor: subtitleColor,
                             ),
                             _FriendAndMore(
                               title: "SEGUIDORES",
                               number: "134",
-                              textColor: Color.fromARGB(255, 248, 245, 245),
-                              subtitleColor: Color.fromARGB(248, 238, 152, 31),
+                              textColor: titleColor,
+                              subtitleColor: subtitleColor,
                             ),
                           ],
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),
               ),
             ),
-          ),
+          )
         ],
       ),
     );
@@ -315,6 +317,7 @@ class _FriendAndMore extends StatelessWidget {
   final Color subtitleColor;
 
   const _FriendAndMore({
+    super.key,
     required this.title,
     required this.number,
     required this.textColor,

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:spotifymusic_app/Provider/cart_provider.dart';
 import 'package:spotifymusic_app/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CheckOutBox extends StatelessWidget {
   const CheckOutBox({super.key});
@@ -19,111 +21,116 @@ class CheckOutBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = CartProvider.of(context);
+    final provider = CartProvider.of(context, listen: true);
+
     final cantidad = provider.cart.length;
 
-    // Detecta si está en Dark Mode
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
-    final backgroundColor = isDarkMode ? Colors.grey[900] : Colors.white;
-    final textColor = isDarkMode ? Colors.grey[300] : Colors.grey;
-    final cantidadColor = isDarkMode ? Colors.white : Colors.black;
-    final dividerColor = isDarkMode ? Colors.grey[700] : Colors.grey[300];
+    final background = isDarkMode ? Colors.grey[900] : Colors.white;
 
     return Container(
       height: 200,
-      width: double.infinity,
       decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: const BorderRadius.only(
-          topRight: Radius.circular(30),
-          topLeft: Radius.circular(30),
-        ),
-        boxShadow: [
-          if (!isDarkMode)
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-        ],
+        color: background,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
       ),
       padding: const EdgeInsets.all(20),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Cantidad libros a descargar: ",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: textColor,
-            ),
-          ),
-          const SizedBox(height: 1),
-          Divider(color: dividerColor),
-          const SizedBox(height: 2),
-
-          // Cantidad centrada
-          Center(
-            child: Text(
-              "$cantidad",
+          Text("Cantidad libros a descargar:",
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: cantidadColor,
-              ),
+                color: isDarkMode ? Colors.grey[300] : Colors.grey,
+              )),
+          const SizedBox(height: 8),
+          Text(
+            "$cantidad",
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: isDarkMode ? Colors.white : Colors.black,
             ),
           ),
-
-          const SizedBox(height: 20),
-
-          // Botón de descarga
+          const Spacer(),
           ElevatedButton(
             onPressed: () async {
-              if (provider.cart.isNotEmpty) {
-                final primerLibro = provider.cart.first;
+  if (provider.cart.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("No tienes libros en el carrito.")),
+    );
+    return;
+  }
 
-                if (primerLibro.pdfUrl.isNotEmpty) {
-                  await _abrirPdf(primerLibro.pdfUrl, context);
+  final libro = provider.cart.first;
+  if (libro.pdfUrl.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("❌ Este libro no tiene PDF.")),
+    );
+    return;
+  }
+  
+  String makeDocId(String title) {
+  return title.trim()
+    .toLowerCase()
+    .replaceAll(RegExp(r'\s+'), '_')  // espacios -> _
+    .replaceAll(RegExp(r'[^a-z0-9_áéíóúñü]'), ''); // quitar chars raros (ajusta si quieres)
+}
 
-                  // 🔹 Agregamos una notificación con el título del libro
-                  provider.addNotification(
-                    "Se ha descargado el libro ${primerLibro.title}",
-                  );
 
-                  provider.clearCart();
+  // abrir pdf (puedes abrir primero o después según prefieras)
+  await _abrirPdf(libro.pdfUrl, context);
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                          "Se descargó el libro '${primerLibro.title}' y se vació el carrito."),
-                    ),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text("❌ Este libro no tiene PDF disponible.")),
-                  );
-                }
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("No tienes libros en el carrito.")),
-                );
-              }
-            },
+  final user = FirebaseAuth.instance.currentUser;
+  final bookId = makeDocId(libro.title);
+  final bookRef = FirebaseFirestore.instance.collection("books").doc(bookId);
+
+  try {
+    // 1) Transaction seguro para incrementar o crear el doc si no existe
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      final snapshot = await transaction.get(bookRef);
+      if (!snapshot.exists) {
+        transaction.set(bookRef, {
+          "title": libro.title,
+          "totalDownloads": 1,
+          // puedes añadir otros campos iniciales si quieres
+        });
+      } else {
+        transaction.update(bookRef, {
+          "totalDownloads": FieldValue.increment(1),
+        });
+      }
+    });
+
+    // 2) Añadir registro en subcolección 'downloads' con timestamp y uid
+    await bookRef.collection("downloads").add({
+      "uid": user?.uid ?? "invitado",
+      "timestamp": Timestamp.now(), // nombre 'timestamp' (coincide con DetailScreen)
+    });
+
+    // 3) Notificar y limpiar carrito (asegúrate clearCart haga notifyListeners)
+    provider.addNotification("Se descargó el libro ${libro.title}");
+    provider.clearCart();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("📥 Se descargó '${libro.title}' exitosamente.")),
+    );
+  } catch (e) {
+    print("⚠️ Error actualizando descargas: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Error al registrar la descarga.")),
+    );
+  }
+},
+
             style: ElevatedButton.styleFrom(
               backgroundColor: kprimaryColor,
               minimumSize: const Size(double.infinity, 55),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
             ),
             child: const Text(
-              "Descargar libro pdf ⏏️",
+              "Descargar libro PDF ⏏️",
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),

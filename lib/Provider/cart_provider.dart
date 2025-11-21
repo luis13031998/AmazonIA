@@ -4,29 +4,31 @@ import 'package:spotifymusic_app/models/product_model.dart';
 
 class CartProvider extends ChangeNotifier {
   final List<Producto> _cart = [];
-  final List<String> _notifications = []; // 🔹 Lista de notificaciones
+  final List<String> _notifications = [];
 
   List<Producto> get cart => _cart;
-  List<String> get notifications => _notifications; // 🔹 Getter para notificaciones
+  List<String> get notifications => _notifications;
 
-  void toggleFavorite(Producto producto) {
-    if (_cart.contains(producto)) {
-      for (Producto element in _cart) {
-        element.quantity++;
-      }
-      _cart.remove(producto);
-    } else {
+  /// 👉 AGREGA UN PRODUCTO SIN DUPLICAR
+  void addToCart(Producto producto) {
+    final index = _cart.indexWhere((p) => p.title == producto.title);
+
+    if (index == -1) {
       _cart.add(producto);
+    } else {
+      _cart[index].quantity++;
     }
+
     notifyListeners();
   }
 
-void removeNotificationAt(int index) {
-  if (index >= 0 && index < _notifications.length) {
-    _notifications.removeAt(index);
-    notifyListeners();
+  /// 👉 ELIMINA NOTIFICACIÓN POR ÍNDICE
+  void removeNotificationAt(int index) {
+    if (index >= 0 && index < _notifications.length) {
+      _notifications.removeAt(index);
+      notifyListeners();
+    }
   }
-}
 
   void incrementoQtn(int index) {
     _cart[index].quantity++;
@@ -41,42 +43,35 @@ void removeNotificationAt(int index) {
   }
 
   void clearCart() {
-    cart.clear();
-    notifyListeners();
+  for (var p in _cart) {
+    p.quantity = 1;             // Reinicia cada cantidad
   }
+  _cart.clear();                // Vacía el carrito
+  notifyListeners();            // Notifica a la UI
+}
 
   void removeFromCart(int index) {
-    cart.removeAt(index);
+    _cart.removeAt(index);
     notifyListeners();
   }
 
-  /// ✅ Método para obtener el primer producto del carrito
   Producto? getFirstProduct() {
-    if (_cart.isNotEmpty) {
-      return _cart.first;
-    }
+    if (_cart.isNotEmpty) return _cart.first;
     return null;
   }
 
-  /// 🔹 Agregar una notificación
+  /// 👉 AÑADIR NOTIFICACIÓN
   void addNotification(String message) {
     _notifications.add(message);
     notifyListeners();
   }
 
-  /// 🔹 Limpiar todas las notificaciones (ej: al leerlas)
   void clearNotifications() {
     _notifications.clear();
     notifyListeners();
   }
 
-  static CartProvider of(
-    BuildContext context, {
-    bool listen = true,
-  }) {
-    return Provider.of<CartProvider>(
-      context,
-      listen: listen,
-    );
+  static CartProvider of(BuildContext context, {bool listen = true}) {
+    return Provider.of<CartProvider>(context, listen: listen);
   }
 }

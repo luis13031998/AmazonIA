@@ -2,7 +2,7 @@ import 'dart:convert'; // Import 'dart:convert' to use utf8.decode
 import 'package:http/http.dart' as http;
 
 class LlamaService {
-  final String _apiKey = "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";
+  final String _apiKey = "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";
   final String _endpoint = "https://api.groq.com/openai/v1/chat/completions";
 
   Future<String> generateText(String prompt) async {

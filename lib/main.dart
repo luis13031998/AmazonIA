@@ -1,4 +1,3 @@
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,41 +17,52 @@ import 'package:spotifymusic_app/service_locator.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   Stripe.publishableKey = stripePublishablekey;
+
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: kIsWeb
-           ? HydratedStorageDirectory.web
-        : HydratedStorageDirectory((await getApplicationDocumentsDirectory()).path),
+        ? HydratedStorageDirectory.web
+        : HydratedStorageDirectory(
+            (await getApplicationDocumentsDirectory()).path,
+          ),
   );
-   
-  await Firebase. initializeApp(
-   options: DefaultFirebaseOptions.currentPlatform
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
   );
 
   await initializeDependencies();
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
- @override
-  Widget build(BuildContext context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => ThemeCubit()),
-          ChangeNotifierProvider(create: (_) => CartProvider()),
-          ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        /// BLoC Providers
+        BlocProvider(create: (_) => ThemeCubit()),
 
-        ],
-        child: BlocBuilder<ThemeCubit, ThemeMode>(
-          builder: (context, mode) => MaterialApp(
+        /// ChangeNotifier Providers
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+      ],
+
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, mode) {
+          return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: mode,
-            home: const SplashPage(), // O SplashPage(), como prefieras
-          ),
-        ),
-      );
+            home: const SplashPage(),
+          );
+        },
+      ),
+    );
+  }
 }

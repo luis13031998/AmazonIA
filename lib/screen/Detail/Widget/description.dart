@@ -21,6 +21,11 @@ class _DescriptionState extends State<Description> {
 
   @override
   Widget build(BuildContext context) {
+    // Detectar colores según el tema actual
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white70 : Colors.black87;
+    final selectedColor = Colors.orange;
+
     String textToShow = '';
     if (selectedTab == 'descripcion') {
       textToShow = widget.description;
@@ -36,30 +41,26 @@ class _DescriptionState extends State<Description> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 🔸 Fila con desplazamiento horizontal para evitar overflow
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                _buildTabButton("Descripción", 'descripcion'),
+                _buildTabButton("Descripción", 'descripcion', isDark, textColor, selectedColor),
                 const SizedBox(width: 8),
-                _buildTabButton("N° de Descargas", 'descargas'),
+                _buildTabButton("N° de Descargas", 'descargas', isDark, textColor, selectedColor),
                 const SizedBox(width: 8),
-                _buildTabButton("Reseñas", 'reseñas'),
+                _buildTabButton("Reseñas", 'reseñas', isDark, textColor, selectedColor),
               ],
             ),
           ),
-
           const SizedBox(height: 16),
-
-          // 🔸 Contenido dinámico
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
             child: Text(
               key: ValueKey<String>(selectedTab),
               textToShow,
-              style: const TextStyle(
-                color: Colors.white70,
+              style: TextStyle(
+                color: textColor,
                 fontSize: 15,
                 height: 1.5,
               ),
@@ -70,25 +71,36 @@ class _DescriptionState extends State<Description> {
     );
   }
 
-  // 🔸 Botón de pestaña reutilizable
-  Widget _buildTabButton(String text, String tabKey) {
+  // 🔸 Botón de pestaña reutilizable con tema dinámico
+  Widget _buildTabButton(
+    String text,
+    String tabKey,
+    bool isDark,
+    Color textColor,
+    Color selectedColor,
+  ) {
     final bool isSelected = selectedTab == tabKey;
+
     return GestureDetector(
       onTap: () => setState(() => selectedTab = tabKey),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.orange : Colors.transparent,
+          color: isSelected ? selectedColor : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? Colors.orange : Colors.white24,
+            color: isSelected
+                ? selectedColor
+                : (isDark ? Colors.white24 : Colors.black26),
           ),
         ),
         child: Text(
           text,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: isSelected ? Colors.white : Colors.white70,
+            color: isSelected
+                ? Colors.white
+                : textColor,
           ),
         ),
       ),
