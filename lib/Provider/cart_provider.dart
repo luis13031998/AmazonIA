@@ -5,13 +5,15 @@ import 'package:spotifymusic_app/models/product_model.dart';
 class CartProvider extends ChangeNotifier {
   final List<Producto> _cart = [];
   final List<String> _notifications = [];
-
+  final Set<String> _downloadedBookIds = {}; // 👈 controla descargas duplicadas
+ 
+  List<String> notifications = [];
   List<Producto> get cart => _cart;
-  List<String> get notifications => _notifications;
+ 
 
   /// 👉 AGREGA UN PRODUCTO SIN DUPLICAR
   void addToCart(Producto producto) {
-    final index = _cart.indexWhere((p) => p.title == producto.title);
+    final index = _cart.indexWhere((p) => p.id == producto.id);
 
     if (index == -1) {
       _cart.add(producto);
@@ -22,13 +24,22 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// ✅ VERIFICA SI EL LIBRO YA FUE DESCARGADO
+  bool isBookDownloaded(String bookId) {
+    return _downloadedBookIds.contains(bookId);
+  }
+
+  /// ✅ REGISTRA LIBRO COMO DESCARGADO
+  void markAsDownloaded(String bookId) {
+    _downloadedBookIds.add(bookId);
+    notifyListeners();
+  }
+
   /// 👉 ELIMINA NOTIFICACIÓN POR ÍNDICE
   void removeNotificationAt(int index) {
-    if (index >= 0 && index < _notifications.length) {
-      _notifications.removeAt(index);
-      notifyListeners();
-    }
-  }
+  notifications.removeAt(index);
+  notifyListeners();
+}
 
   void incrementoQtn(int index) {
     _cart[index].quantity++;
@@ -43,12 +54,12 @@ class CartProvider extends ChangeNotifier {
   }
 
   void clearCart() {
-  for (var p in _cart) {
-    p.quantity = 1;             // Reinicia cada cantidad
+    for (var p in _cart) {
+      p.quantity = 1; // Reinicia cada cantidad
+    }
+    _cart.clear();
+    notifyListeners();
   }
-  _cart.clear();                // Vacía el carrito
-  notifyListeners();            // Notifica a la UI
-}
 
   void removeFromCart(int index) {
     _cart.removeAt(index);
@@ -62,12 +73,18 @@ class CartProvider extends ChangeNotifier {
 
   /// 👉 AÑADIR NOTIFICACIÓN
   void addNotification(String message) {
-    _notifications.add(message);
-    notifyListeners();
-  }
+  notifications.insert(0, message);
+  notifyListeners();
+}
 
   void clearNotifications() {
     _notifications.clear();
+    notifyListeners();
+  }
+
+  /// ♻ Limpia historial de descargas si lo necesitas
+  void clearDownloadedBooks() {
+    _downloadedBookIds.clear();
     notifyListeners();
   }
 

@@ -101,13 +101,16 @@ class ProductCart extends StatelessWidget {
                   child: Container(
                     height: 40,
                     width: 40,
-                    decoration: const BoxDecoration(
-                      color: kprimaryColor,
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(20),
-                        bottomLeft: Radius.circular(10),
-                      ),
+                    decoration: BoxDecoration(
+                     color: Theme.of(context).brightness == Brightness.dark
+                     ? const Color.fromARGB(255, 65, 30, 191)         // Color en modo oscuro
+                     : kprimaryColor,             // Color en modo claro
+                     borderRadius: const BorderRadius.only(
+                     topRight: Radius.circular(20),
+                     bottomLeft: Radius.circular(10),
+                     ),
                     ),
+
                     child: GestureDetector(
                       onTap: () {
                         provider.toggleFavorite(producto);

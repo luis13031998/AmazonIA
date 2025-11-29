@@ -25,7 +25,7 @@ class AddtoCart extends StatelessWidget {
         child: GestureDetector(
           onTap: () {
             provider.addToCart(producto);
-
+            provider.addNotification("Reservaste: ${producto.title}");
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: isDark ? Colors.grey[900] : Colors.black87,
@@ -45,7 +45,7 @@ class AddtoCart extends StatelessWidget {
             height: 55,
             padding: const EdgeInsets.symmetric(horizontal: 100),
             decoration: BoxDecoration(
-              color: kprimaryColor,
+             color: isDark ? const Color.fromARGB(255, 65, 30, 191) : const Color.fromARGB(255, 240, 127, 14),
               borderRadius: BorderRadius.circular(50),
             ),
             alignment: Alignment.center,

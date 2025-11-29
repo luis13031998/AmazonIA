@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'dart:async';
-import 'package:flutter/scheduler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotifymusic_app/IAllamaService.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -17,15 +15,10 @@ class _ChatScreenState extends State<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
 
   List<Map<String, String>> chatMessages = [
-    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "system", "content": "Eres un asistente útil y siempre respondes en español."},
   ];
 
   bool isLoading = false;
-  StreamSubscription<String>? _streamSub;
-  bool _shouldAutoScroll = true;
-  static const double _autoScrollThreshold = 120.0;
-
-  // 🔥 Modo oscuro / modo claro
   bool isDarkMode = false;
 
   @override
@@ -33,10 +26,8 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     _loadTheme();
     _loadChatHistory();
-    _scrollController.addListener(_onScroll);
   }
 
-  /// Cargar preferencia de tema guardada
   Future<void> _loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -44,7 +35,6 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-  /// Guardar tema actual
   Future<void> _saveTheme(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool("isDarkMode", value);
@@ -71,99 +61,45 @@ class _ChatScreenState extends State<ChatScreen> {
     await prefs.remove('chat_history');
     setState(() {
       chatMessages = [
-        {"role": "system", "content": "Eres un asistente útil y siempre respondes en español de forma clara y natural."},
+        {"role": "system", "content": "Eres un asistente útil y siempre respondes en español."}
       ];
     });
-  }
-
-  void _onScroll() {
-    if (!_scrollController.hasClients) {
-      _shouldAutoScroll = true;
-      return;
-    }
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final current = _scrollController.position.pixels;
-    _shouldAutoScroll = (maxScroll - current) <= _autoScrollThreshold;
   }
 
   Future<void> query(String prompt) async {
     if (prompt.trim().isEmpty) return;
 
-    final userMessage = {"role": "user", "content": prompt};
     setState(() {
-      chatMessages.add(userMessage);
+      chatMessages.add({"role": "user", "content": prompt});
       isLoading = true;
     });
+
     await _saveChatHistory();
 
-    final data = {
-      "model": "llama3.2",
-      "messages": chatMessages,
-      "stream": true,
-      "options": {
-        "temperature": 0.5,
-        "num_predict": 200,
-        "num_ctx": 1508,
-      }
-    };
-
     try {
-      final request = http.Request(
-          'POST',
-          Uri.parse("https://unresolute-subcontinental-kristy.ngrok-free.dev"))
-        ..headers["Content-Type"] = "application/json"
-        ..body = json.encode(data);
+      final reply = await LlamaService().generateText(prompt);
 
-      final response = await request.send();
-
-      if (response.statusCode == 200) {
-        String accumulated = "";
-
-        setState(() {
-          chatMessages.add({"role": "assistant", "content": ""});
-        });
-
-        _streamSub = response.stream
-            .transform(utf8.decoder)
-            .transform(const LineSplitter())
-            .listen((line) async {
-          if (line.trim().isEmpty) return;
-          final event = json.decode(line);
-
-          if (event["message"]?["content"] != null) {
-            accumulated += event["message"]["content"];
-            setState(() {
-              chatMessages.last["content"] = accumulated;
-            });
-
-            if (_shouldAutoScroll) {
-              SchedulerBinding.instance.addPostFrameCallback((_) {
-                if (!_scrollController.hasClients) return;
-                _scrollController.jumpTo(
-                    _scrollController.position.maxScrollExtent);
-              });
-            }
-
-            await _saveChatHistory();
-          }
-        });
-      }
+      setState(() {
+        chatMessages.add({"role": "assistant", "content": reply});
+      });
+      await _saveChatHistory();
     } catch (e) {
-      print("Request error: $e");
+      setState(() {
+        chatMessages.add({
+          "role": "assistant",
+          "content": "Error al conectar con la IA: $e"
+        });
+      });
     } finally {
       _controller.clear();
       setState(() => isLoading = false);
-      await _saveChatHistory();
-    }
-  }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-    _streamSub?.cancel();
-    super.dispose();
+      Future.delayed(const Duration(milliseconds: 150), () {
+        if (_scrollController.hasClients) {
+          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+        }
+      });
+    }
   }
 
   Color _bubbleColor(bool isUser) {
@@ -177,16 +113,14 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
       darkTheme: ThemeData.dark(),
       theme: ThemeData.light(),
       home: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-
         appBar: AppBar(
           title: const Text("IE ROSA DE SANTA MARIA - IA"),
           actions: [
-            // 🔥 SWITCH MODO CLARO / OSCURO
             Row(
               children: [
                 Icon(isDarkMode ? Icons.dark_mode : Icons.light_mode),
@@ -200,7 +134,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ],
             ),
-
             IconButton(
               icon: const Icon(Icons.delete_forever_rounded),
               color: Colors.redAccent,
@@ -209,8 +142,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   context: context,
                   builder: (ctx) => AlertDialog(
                     title: const Text("¿Borrar todo el chat?"),
-                    content:
-                        const Text("Esta acción eliminará todo el historial."),
+                    content: const Text("Esta acción eliminará todo el historial."),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(ctx, false),
@@ -240,13 +172,13 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemCount: chatMessages.length,
                   itemBuilder: (context, index) {
                     if (index == 0) return const SizedBox.shrink();
+
                     final msg = chatMessages[index];
                     final isUser = msg["role"] == "user";
 
                     return Align(
-                      alignment: isUser
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
+                      alignment:
+                          isUser ? Alignment.centerRight : Alignment.centerLeft,
                       child: Container(
                         constraints: const BoxConstraints(maxWidth: 320),
                         margin: const EdgeInsets.symmetric(
@@ -257,16 +189,14 @@ class _ChatScreenState extends State<ChatScreen> {
                           borderRadius: BorderRadius.only(
                             topLeft: const Radius.circular(12),
                             topRight: const Radius.circular(12),
-                            bottomLeft: isUser
-                                ? const Radius.circular(12)
-                                : const Radius.circular(0),
-                            bottomRight: isUser
-                                ? const Radius.circular(0)
-                                : const Radius.circular(12),
+                            bottomLeft:
+                                isUser ? const Radius.circular(12) : const Radius.circular(0),
+                            bottomRight:
+                                isUser ? const Radius.circular(0) : const Radius.circular(12),
                           ),
                         ),
                         child: Text(
-                          msg["content"] ?? '',
+                          msg["content"] ?? "",
                           style: const TextStyle(fontSize: 15),
                         ),
                       ),
@@ -293,9 +223,9 @@ class _ChatScreenState extends State<ChatScreen> {
                           filled: true,
                           fillColor: isDarkMode
                               ? Colors.grey.shade900
-                              : const Color.fromARGB(255, 166, 163, 163),
+                              : Colors.grey.shade300,
                         ),
-                        onSubmitted: (value) => query(value),
+                        onSubmitted: (v) => query(v),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -310,10 +240,10 @@ class _ChatScreenState extends State<ChatScreen> {
                             color: Colors.orange,
                             iconSize: 30,
                             onPressed: () => query(_controller.text),
-                          ),
+                          )
                   ],
                 ),
-              ),
+              )
             ],
           ),
         ),

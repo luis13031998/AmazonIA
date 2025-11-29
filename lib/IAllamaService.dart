@@ -1,4 +1,4 @@
-import 'dart:convert'; // Import 'dart:convert' to use utf8.decode
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class LlamaService {
@@ -6,42 +6,47 @@ class LlamaService {
   final String _endpoint = "https://api.groq.com/openai/v1/chat/completions";
 
   Future<String> generateText(String prompt) async {
-    try { // Added try-catch for better error handling
+    try {
       final response = await http.post(
         Uri.parse(_endpoint),
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $_apiKey',
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $_apiKey",
         },
         body: jsonEncode({
-          "model": "llama3-8b-8192",
+          "model": "llama-3.1-8b-instant",
           "messages": [
             {
               "role": "system",
-              "content": "Eres un recomendador de libros experto. Sugiere libros similares o relacionados basados en el gusto del usuario."
+              "content":
+                  "Eres un recomendador de libros experto. Responde siempre en español."
             },
-            {"role": "user", "content": prompt}
+            {
+              "role": "user",
+              "content": prompt,
+            }
           ],
           "temperature": 0.7,
         }),
       );
 
       if (response.statusCode == 200) {
-        // --- THIS IS THE KEY CHANGE ---
-        // Decode the raw bytes of the response body as UTF-8
-        final String decodedBody = utf8.decode(response.bodyBytes);
-        final data = jsonDecode(decodedBody); // Now decode the correctly encoded string
-        return data['choices'][0]['message']['content'];
+        // --- Evita error del APK ---
+        final bodyUtf8 = utf8.decode(response.bodyBytes);
+        final data = jsonDecode(bodyUtf8);
+
+        if (data["choices"] == null || data["choices"].isEmpty) {
+          return "Lo siento, no puedo procesar tu solicitud en este momento.";
+        }
+
+        return data["choices"][0]["message"]["content"];
       } else {
-        // Print the full response body for debugging API errors
-        print("Groq API Error Status: ${response.statusCode}");
-        print("Groq API Error Body: ${response.body}");
-        throw Exception("Error Groq: ${response.statusCode} - ${response.body}");
+        print("Groq Error (${response.statusCode}) → ${response.body}");
+        return "Error del servidor (${response.statusCode}). Intenta de nuevo.";
       }
     } catch (e) {
-      // Catch any network or decoding errors
-      print("Network or Decoding Exception: $e");
-      throw Exception("Failed to get recommendation: $e");
+      print("Exception Groq → $e");
+      return "Error de conexión. Revisa tu internet.";
     }
   }
 }

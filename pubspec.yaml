@@ -27,6 +27,7 @@ dependencies:
   firebase_storage: ^12.0.0
   flutter_pdfview: ^1.4.3
   firebase_auth:
+  flutter_tts: ^3.6.3
   get_it:
   dartz:
   http: ^1.2.2
@@ -35,6 +36,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.4
   shared_preferences: ^2.5.3
   sign_in_with_apple: ^7.0.1
+  firebase_app_check: ^0.3.2+10
 
 dev_dependencies:
   flutter_test:

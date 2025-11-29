@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +15,7 @@ import 'package:spotifymusic_app/core/configs/theme/app_theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotifymusic_app/firebase_options.dart';
 import 'package:spotifymusic_app/service_locator.dart';
+import 'package:spotifymusic_app/services/NotificationButton.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,8 +30,15 @@ Future<void> main() async {
           ),
   );
 
+  // 🚀 Inicializar Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // 🔐 ACTIVAR FIREBASE APP CHECK
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.playIntegrity,   // 👈 Android
+    appleProvider: AppleProvider.deviceCheck,         // 👈 iOS
   );
 
   await initializeDependencies();
@@ -50,6 +59,7 @@ class MyApp extends StatelessWidget {
         /// ChangeNotifier Providers
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
       ],
 
       child: BlocBuilder<ThemeCubit, ThemeMode>(

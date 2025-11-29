@@ -35,19 +35,21 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            cuttentIndex = 3;
-          });
-        },
-        shape: const CircleBorder(),
-        backgroundColor: kprimaryColor,
-        child: const Icon(
-          Icons.home,
-          color: Colors.white,
-          size: 35,
-        ),
-      ),
+      onPressed: () {
+      setState(() {
+      cuttentIndex = 3;
+    });
+    },
+  shape: const CircleBorder(),
+  backgroundColor: isDarkMode 
+      ? const Color.fromARGB(255, 65, 30, 191)
+      : const Color.fromARGB(255, 255, 102, 14),
+  child: const Icon(
+    Icons.home,
+    color: Colors.white,
+    size: 35,
+  ),
+),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         elevation: 1,
@@ -61,17 +63,20 @@ class _BottomNavBarState extends State<BottomNavBar> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
-              onPressed: () {
-                setState(() {
-                  cuttentIndex = 1;
-                });
-              },
-              icon: Icon(
-                Icons.grid_view_outlined,
-                size: 30,
-                color: cuttentIndex == 1 ? kprimaryColor : inactiveColor,
-              ),
-            ),
+  onPressed: () {
+    setState(() {
+      cuttentIndex = 1;
+    });
+  },
+  icon: Icon(
+    Icons.grid_view_outlined,
+    size: 30,
+    color: cuttentIndex == 1
+        ? (isDarkMode ? const Color.fromARGB(255, 141, 117, 231) : const Color.fromARGB(255, 255, 102, 14))
+        : inactiveColor,
+  ),
+),
+
             IconButton(
               onPressed: () {
                 setState(() {
@@ -81,7 +86,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
               icon: Icon(
                 Icons.favorite_border,
                 size: 30,
-                color: cuttentIndex == 2 ? kprimaryColor : inactiveColor,
+                color: cuttentIndex == 2 
+                 ? (isDarkMode ? const Color.fromARGB(255, 141, 117, 231) : const Color.fromARGB(255, 255, 102, 14))
+                 : inactiveColor,
               ),
             ),
             const SizedBox(width: 15),
@@ -94,7 +101,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
               icon: Icon(
                 Icons.shopping_cart_outlined,
                 size: 30,
-                color: cuttentIndex == 4 ? kprimaryColor : inactiveColor,
+                color: cuttentIndex == 4 
+                 ? (isDarkMode ? const Color.fromARGB(255, 141, 117, 231) : const Color.fromARGB(255, 255, 102, 14))
+                 : inactiveColor,
               ),
             ),
             IconButton(
@@ -106,7 +115,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
               icon: Icon(
                 Icons.person,
                 size: 30,
-                color: cuttentIndex == 5 ? kprimaryColor : inactiveColor,
+                color: cuttentIndex == 5 
+                 ? (isDarkMode ? const Color.fromARGB(255, 141, 117, 231) : const Color.fromARGB(255, 255, 102, 14))
+                 : inactiveColor,
               ),
             ),
           ],

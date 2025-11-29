@@ -7,6 +7,7 @@ import 'package:spotifymusic_app/screen/Detail/Widget/description.dart';
 import 'package:spotifymusic_app/screen/Detail/Widget/detail_app_bar.dart';
 import 'package:spotifymusic_app/screen/Detail/Widget/items_details.dart';
 
+
 class DetailScreen extends StatefulWidget {
   final Producto producto;
 
@@ -27,7 +28,9 @@ class _DetailScreenState extends State<DetailScreen> {
     final activeDotColor = isDark ? Colors.white : Colors.black;
     final borderDotColor = isDark ? Colors.white70 : Colors.black;
 
-    final String bookId = widget.producto.title.trim();
+    /// 📌 IMPORTANTE: bookId corregido
+    final String bookId = widget.producto.id;
+
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -102,11 +105,11 @@ class _DetailScreenState extends State<DetailScreen> {
                     ItemsDetails(producto: widget.producto),
                     const SizedBox(height: 20),
 
-                    /// 🔥 STREAM PRINCIPAL (DOCUMENTO DEL LIBRO)
+                    /// 🔥 STREAM PRINCIPAL
                     StreamBuilder<DocumentSnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('books')
-                          .doc(bookId)
+                          .doc(widget.producto.id)
                           .snapshots(),
                       builder: (context, bookSnapshot) {
                         if (bookSnapshot.connectionState ==
@@ -118,7 +121,6 @@ class _DetailScreenState extends State<DetailScreen> {
                           );
                         }
 
-                        /// SI EL DOCUMENTO NO EXISTE
                         if (!bookSnapshot.hasData ||
                             !bookSnapshot.data!.exists) {
                           return Description(
@@ -129,15 +131,10 @@ class _DetailScreenState extends State<DetailScreen> {
                           );
                         }
 
-                        final bookData =
-                            bookSnapshot.data!.data() as Map<String, dynamic>;
+                        final data = bookSnapshot.data!.data() as Map<String, dynamic>;
+                        final int totalDownloads = data['totalDownloads'] ?? 0;
 
-                        final int totalDownloads =
-                            bookData['totalDownloads'] is int
-                                ? bookData['totalDownloads']
-                                : 0;
-
-                        /// SUBSTREAM – LISTA DE DESCARGAS
+                        /// 🔥 SUBSTREAM DE USUARIOS QUE DESCARGARON
                         return StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
                               .collection('books')
@@ -146,12 +143,22 @@ class _DetailScreenState extends State<DetailScreen> {
                               .orderBy('timestamp', descending: true)
                               .snapshots(),
                           builder: (context, usersSnapshot) {
-                            if (!usersSnapshot.hasData) {
+                            if (usersSnapshot.connectionState ==
+                                ConnectionState.waiting) {
                               return Description(
                                 description: widget.producto.description,
                                 dowlands:
                                     "Este libro ha sido descargado $totalDownloads veces.",
                                 reviews: "Cargando usuarios...",
+                              );
+                            }
+
+                            if (!usersSnapshot.hasData) {
+                              return Description(
+                                description: widget.producto.description,
+                                dowlands:
+                                    "Este libro ha sido descargado $totalDownloads veces.",
+                                reviews: "No hay descargas registradas.",
                               );
                             }
 

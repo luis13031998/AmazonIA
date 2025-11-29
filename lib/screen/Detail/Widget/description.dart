@@ -21,10 +21,12 @@ class _DescriptionState extends State<Description> {
 
   @override
   Widget build(BuildContext context) {
-    // Detectar colores según el tema actual
+    // Detectar tema
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Colores dinámicos
     final textColor = isDark ? Colors.white70 : Colors.black87;
-    final selectedColor = Colors.orange;
+    final selectedColor = isDark ? const Color.fromARGB(255, 65, 30, 191) : const Color.fromARGB(255, 240, 127, 14); // 👈 Aquí cambia
 
     String textToShow = '';
     if (selectedTab == 'descripcion') {
@@ -71,7 +73,7 @@ class _DescriptionState extends State<Description> {
     );
   }
 
-  // 🔸 Botón de pestaña reutilizable con tema dinámico
+  // 🔸 Botón reutilizable
   Widget _buildTabButton(
     String text,
     String tabKey,
@@ -98,9 +100,7 @@ class _DescriptionState extends State<Description> {
           text,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: isSelected
-                ? Colors.white
-                : textColor,
+            color: isSelected ? Colors.white : textColor,
           ),
         ),
       ),

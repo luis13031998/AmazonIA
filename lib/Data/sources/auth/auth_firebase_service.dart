@@ -3,9 +3,6 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:spotifymusic_app/Data/models/auth/create_user_req.dart';
 import 'package:spotifymusic_app/Data/models/auth/signin_user_req.dart';
-import 'package:spotifymusic_app/Dominio/entities/auth/user.dart';
-
-import 'auth_firebase_service.dart';
 
 abstract class AuthFirebaseService {
   Future<Either<String, String>> signup(CreateUserReq createUserReq);
@@ -17,9 +14,9 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // ----------------------------------------------------------
-  // 🔐 INICIAR SESIÓN (con verificación de correo)
-  // ----------------------------------------------------------
+  // ============================================================
+  // 🔐 INICIAR SESIÓN (verificación de correo antes de entrar)
+  // ============================================================
   @override
   Future<Either<String, String>> signin(SigninUserReq signinUserReq) async {
     try {
@@ -29,10 +26,9 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
       );
 
       final user = userCredential.user;
-
       if (user == null) return const Left('Error al obtener usuario.');
 
-      // 🚫 No permitir acceso si no verificó su correo
+      // ❌ Bloquear si no verificó su correo
       if (!user.emailVerified) {
         await _auth.signOut();
         return const Left(
@@ -41,6 +37,7 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
       }
 
       return const Right('Inicio de sesión exitoso');
+
     } on FirebaseAuthException catch (e) {
       String message;
       switch (e.code) {
@@ -51,10 +48,10 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
           message = 'No existe una cuenta con ese correo.';
           break;
         case 'wrong-password':
-          message = 'Ingresar credenciales para iniciar sesion ‼️.';
+          message = 'Ingresar credenciales para iniciar sesión ‼️.';
           break;
         default:
-          message = 'Contraseña incorrecta ❌: ${e.message}';
+          message = 'Error: ${e.message}';
       }
       return Left(message);
     } catch (e) {
@@ -62,13 +59,14 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
     }
   }
 
-  // ----------------------------------------------------------
-  // 🆕 REGISTRO DE USUARIO + VERIFICACIÓN DE CORREO
-  // ----------------------------------------------------------
+  // ============================================================
+  // 🆕 REGISTRO + GUARDAR NOMBRE + VERIFICACIÓN DE CORREO
+  // ============================================================
   @override
   Future<Either<String, String>> signup(CreateUserReq createUserReq) async {
     try {
-      final userCredential = await _auth.createUserWithEmailAndPassword(
+      final userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: createUserReq.email,
         password: createUserReq.password,
       );
@@ -76,23 +74,26 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
       final user = userCredential.user;
       if (user == null) return const Left('No se pudo crear el usuario.');
 
-      // 🔥 Guardar datos en Firestore
-      await _firestore.collection('Usuarios').doc(user.uid).set({
-        'name': createUserReq.fullName,
+      // 🔥 Guardar información REAL en Firestore
+      await _firestore.collection('users').doc(user.uid).set({
+        'fullName': createUserReq.fullName,
         'email': createUserReq.email,
         'provider': 'email',
+        'createdAt': FieldValue.serverTimestamp(),
         'emailVerified': false,
+        
       });
 
-      // 📧 Enviar correo de verificación
+      // 📧 Enviar verificación
       await user.sendEmailVerification();
 
-      // 🚫 Cerrar sesión para obligar a verificar primero
+      // 🔐 Cerrar sesión hasta verificar correo
       await _auth.signOut();
 
       return const Right(
         'Cuenta creada exitosamente. Se envió un correo de verificación.',
       );
+
     } on FirebaseAuthException catch (e) {
       String message;
       switch (e.code) {
@@ -106,14 +107,15 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
           message = 'Error al registrarse: ${e.message}';
       }
       return Left(message);
+
     } catch (e) {
       return Left('Error inesperado: $e');
     }
   }
 
-  // ----------------------------------------------------------
-  // 🔁 RECUPERAR CONTRASEÑA
-  // ----------------------------------------------------------
+  // ============================================================
+  // 🔁 RECUPERACIÓN DE CONTRASEÑA
+  // ============================================================
   @override
   Future<Either<String, String>> sendPasswordReset(String email) async {
     try {
@@ -126,9 +128,7 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
     }
   }
 
-  // ----------------------------------------------------------
-  // 📧 FUNCIÓN EXTRA: RESTABLECER CONTRASEÑA (duplicado simplificado)
-  // ----------------------------------------------------------
+  // (Extra — alias repetido)
   Future<Either<String, String>> sendPasswordResetEmail(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);

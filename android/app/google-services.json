@@ -12,7 +12,20 @@
           "package_name": "com.example.spotifymusic_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "60188913236-ct55h3c3mcp10qb72u4q0uc5jquvrr6o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.spotifymusic_app",
+            "certificate_hash": "fef7fd39190138528591c022600e54ca91db47a0"
+          }
+        },
+        {
+          "client_id": "60188913236-90d9a1g1mt5gjnfv7e3c606k5e8uhc48.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBjDrI5RXKc5azGCC9j1BXcNO1C9erXJXM"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "60188913236-90d9a1g1mt5gjnfv7e3c606k5e8uhc48.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "60188913236-f9ggmnliem6l6u6lb9nhcmfdp6b53qrf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.spotifymusicApp"
+              }
+            }
+          ]
         }
       }
     }

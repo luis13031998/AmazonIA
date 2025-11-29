@@ -67,11 +67,10 @@ Future<String> getPdfUrl(String fileName) async {
   }
 }
 
-/// 🔹 FUNCIÓN PARA INCREMENTAR DESCARGAS EN FIRESTORE
-Future<void> incrementarDescargas(String tituloLibro) async {
+Future<void> incrementarDescargas(String productId) async {
   try {
     final docRef =
-        FirebaseFirestore.instance.collection('books').doc(tituloLibro);
+        FirebaseFirestore.instance.collection('books').doc(productId);
 
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       final snapshot = await transaction.get(docRef);
@@ -84,17 +83,18 @@ Future<void> incrementarDescargas(String tituloLibro) async {
       }
     });
 
-    print("✅ Descarga incrementada para $tituloLibro");
+    print("✅ Descarga incrementada para $productId");
   } catch (e) {
     print('⚠️ Error al incrementar descargas: $e');
   }
 }
 
-/// 🔹 FUNCIÓN PARA OBTENER NÚMERO DE DESCARGAS DESDE FIRESTORE
-Future<int> obtenerDescargas(String tituloLibro) async {
+Future<int> obtenerDescargas(String productId) async {
   try {
-    final snapshot =
-        await FirebaseFirestore.instance.collection('books').doc(tituloLibro).get();
+    final snapshot = await FirebaseFirestore.instance
+        .collection('books')
+        .doc(productId)
+        .get();
 
     if (snapshot.exists) {
       return snapshot.get('downloads') ?? 0;
@@ -102,10 +102,11 @@ Future<int> obtenerDescargas(String tituloLibro) async {
       return 0;
     }
   } catch (e) {
-    print('⚠️ Error obteniendo descargas de $tituloLibro: $e');
+    print('⚠️ Error obteniendo descargas de $productId: $e');
     return 0;
   }
 }
+
 
 /// 🔹 LISTA GLOBAL DE TODOS LOS PRODUCTOS
 final List<Producto> all = [];
@@ -120,7 +121,7 @@ Future<void> loadProducts() async {
   String laTriseccion = await getPdfUrl('La_triseccion_del_angulo.pdf');
   all.add(
     Producto(
-      id: "la_triseccion_del_angulo",
+      id: "M01",
       title: "La triseccion del angulo",
       description:
           "El problema de la trisección del ángulo se aborda en varios libros de matemáticas, especialmente en el contexto de la imposibilidad de resolverlo usando solo regla y compás.",
@@ -139,7 +140,7 @@ Future<void> loadProducts() async {
   String americaPdf = await getPdfUrl('54634_LoQueAmericaLeDebeAEspana.pdf');
   all.add(
     Producto(
-      id: "54634_LoQueAmericaLeDebeAEspana",
+      id: "C01",
       title: "America debe a Espana",
       description:
           "Un análisis de la influencia cultural y social de España en América Latina.",
@@ -157,7 +158,7 @@ Future<void> loadProducts() async {
   String diccionariopdf = await getPdfUrl('2700_voces_que_hacen_falta_en_el_diccionario.pdf');
   all.add(
     Producto(
-      id: "2700_voces_que_hacen_falta_en_el_diccionario",
+      id: "C02",
       title: "2700 voces que hacen falta en el diccionario",
       description:
           "Su valor radica en el registro de la lengua coloquial, regional o emergente del siglo XIX/XX en el Perú y América Latina, lo que lo convierte en referencia para estudios de lingüística histórica o lexicografía americana.",
@@ -175,7 +176,7 @@ Future<void> loadProducts() async {
   String razonyFe = await getPdfUrl('De_la_razon_y_la_fe.pdf');
   all.add(
     Producto(
-      id: "De_la_razon_y_la_fe",
+      id: "C03",
       title: "De la razon y la fe",
       description:
           "La perfeccion de un ser consiste no solo en la exacta sujecion á las leyes de su naturaleza, sino tambien en la superioridad o elevacion de sus cualidades.",
@@ -193,7 +194,7 @@ Future<void> loadProducts() async {
   String cachivaches = await getPdfUrl('Cachivaches.pdf');
   all.add(
     Producto(
-      id: "cachivaches",
+      id: "C04",
       title: "Cachivaches",
       description:
           "Un análisis de la influencia cultural y social de España en América Latina.",
@@ -211,7 +212,7 @@ Future<void> loadProducts() async {
   String demonioAndes = await getPdfUrl('El_demonio_de_los_andes.pdf');
   all.add(
     Producto(
-      id: "El_demonio_de_los_andes",
+      id: "C05",
       title: "El demonio de los andes",
       description:
           "Un análisis de la influencia cultural y social de España en América Latina.",
@@ -229,7 +230,7 @@ Future<void> loadProducts() async {
   String hechicera = await getPdfUrl('La_hechicera.pdf');
   all.add(
     Producto(
-      id: "La_hechicera",
+      id: "C06",
       title: "La hechicera",
       description:
           "Un análisis de la influencia cultural y social de España en América Latina.",
@@ -247,7 +248,7 @@ Future<void> loadProducts() async {
   String pinzonada = await getPdfUrl('La_pinzonada.pdf');
   all.add(
     Producto(
-      id: "La_pinzonada",
+      id: "C07",
       title: "La pinzonada",
       description:
           "Un análisis de la influencia cultural y social de España en América Latina.",
@@ -265,7 +266,7 @@ Future<void> loadProducts() async {
   String recluta = await getPdfUrl('La_vuelta_del_recluta.pdf');
   all.add(
     Producto(
-      id: "La_vuelta_del_recluta",
+      id: "C08",
       title: "La vuelta del recluta",
       description:
           "Un análisis de la influencia cultural y social de España en América Latina.",
@@ -283,7 +284,7 @@ Future<void> loadProducts() async {
   String romeoPdf = await getPdfUrl('RomeoYJulieta.pdf');
   all.add(
     Producto(
-      id: "RomeoYJulieta",
+      id: "C09",
       title: "Romeo y Julieta",
       description:
           "El libro 'Romeo y Julieta' es una de las obras más famosas de William Shakespeare y trata sobre una trágica historia de amor entre dos jóvenes pertenecientes a familias rivales.",
@@ -303,7 +304,7 @@ Future<void> loadProducts() async {
       await getPdfUrl('Clavito-y-el-xilófono-mágico_compressed.pdf');
   all.add(
     Producto(
-      id: "Clavito-y-el-xilófono-mágico_compressed",
+      id: "CS01",
       title: "Economia Digital",
       description:
           "Un libro que explica cómo la tecnología está transformando los modelos económicos tradicionales.",
@@ -322,7 +323,7 @@ Future<void> loadProducts() async {
       await getPdfUrl('Anatomia_Nacional.pdf');
   all.add(
     Producto(
-      id: "Anatomia_Nacional",
+      id: "CS02",
       title: "Anatomia Nacional",
       description:
           "Un libro que explica cómo la tecnología está transformando los modelos económicos tradicionales.",
@@ -341,7 +342,7 @@ Future<void> loadProducts() async {
       await getPdfUrl('Curacion_de_un_Aneurisma_Traumatico.pdf');
   all.add(
     Producto(
-      id: "Curacion_de_un_Aneurisma_Traumatico",
+      id: "CS03",
       title: "Curación de un aneurisma traumatico",
       description:
           "Un libro que explica cómo la tecnología está transformando los modelos económicos tradicionales.",
@@ -360,7 +361,7 @@ Future<void> loadProducts() async {
       await getPdfUrl('Estudios_Generales_sobre_la_navegacion_Aerea.pdf');
   all.add(
     Producto(
-      id: "Estudios_Generales_sobre_la_navegacion_Aerea",
+      id: "CS04",
       title: "Estudios generales sobre la navegación aerea",
       description:
           "Un libro que explica cómo la tecnología está transformando los modelos económicos tradicionales.",
@@ -379,7 +380,7 @@ Future<void> loadProducts() async {
       await getPdfUrl('Ligeras_Reflexiones_sobre_la_embriaguez.pdf');
   all.add(
     Producto(
-      id: "Ligeras_Reflexiones_sobre_la_embriaguez",
+      id: "CS05",
       title: "Ligeras reflexiones sobre la embriaguez",
       description:
           "Un libro que explica cómo la tecnología está transformando los modelos económicos tradicionales.",
@@ -398,7 +399,7 @@ Future<void> loadProducts() async {
       await getPdfUrl('Nitrate_of_Soda.pdf');
   all.add(
     Producto(
-      id: "Nitrate_of_Soda",
+      id: "CS06",
       title: "Nitrate of Soda",
       description:
           "Un libro que explica cómo la tecnología está transformando los modelos económicos tradicionales.",
@@ -417,7 +418,7 @@ Future<void> loadProducts() async {
   String democraciaPdf = await getPdfUrl('cuentos-sobre-valores-salud.pdf');
   all.add(
     Producto(
-      id: "cuentos-sobre-valores-salud",
+      id: "H01",
       title: "Democracia Hoy",
       description:
           "Una reflexión sobre los retos y transformaciones de los sistemas democráticos actuales.",
@@ -435,7 +436,7 @@ Future<void> loadProducts() async {
   String abusosPdf = await getPdfUrl('Abusos_que_se_observaron_en_la_Callana.pdf');
   all.add(
     Producto(
-      id: "Abusos_que_se_observaron_en_la_Callana",
+      id: "H02",
       title: "Abusos que se observaron en la callana",
       description:
           "Una reflexión sobre los retos y transformaciones de los sistemas democráticos actuales.",
@@ -453,7 +454,7 @@ Future<void> loadProducts() async {
   String antiguoPdf = await getPdfUrl('Antiguo_Peru.pdf');
   all.add(
     Producto(
-      id: "Antiguo_Peru",
+      id: "H03",
       title: "Antiguo Perú",
       description:
           "Una reflexión sobre los retos y transformaciones de los sistemas democráticos actuales.",
@@ -471,7 +472,7 @@ Future<void> loadProducts() async {
   String antropologiaPdf = await getPdfUrl('Antropologia_y_Sociologia_de_las_Razas_Interandinas.pdf');
   all.add(
     Producto(
-      id: "Antropologia_y_Sociologia_de_las_Razas_Interandinas",
+      id: "H04",
       title: "Antropologia y Sociologia de las Razas Interandinas",
       description:
           "Una reflexión sobre los retos y transformaciones de los sistemas democráticos actuales.",
@@ -489,7 +490,7 @@ Future<void> loadProducts() async {
   String comercioPdf = await getPdfUrl('Comercio_Especial_del_Peru.pdf');
   all.add(
     Producto(
-      id: "Comercio_Especial_del_Peru",
+      id: "H05",
       title: "Comercio especial del Perú",
       description:
           "Una reflexión sobre los retos y transformaciones de los sistemas democráticos actuales.",
@@ -507,7 +508,7 @@ Future<void> loadProducts() async {
   String alfabetizadorPdf = await getPdfUrl('El_alfabetizador_del_Indio.pdf');
   all.add(
     Producto(
-      id: "El_alfabetizador_del_Indio",
+      id: "H06",
       title: "El alfabetizador del indio",
       description:
           "Una reflexión sobre los retos y transformaciones de los sistemas democráticos actuales.",
@@ -525,7 +526,7 @@ Future<void> loadProducts() async {
   String principioPdf = await getPdfUrl('El_principio_de_la_Conquista_en_America.pdf');
   all.add(
     Producto(
-      id: "El_principio_de_la_Conquista_en_America",
+      id: "H07",
       title: "El principio de la conquista en america",
       description:
           "Una reflexión sobre los retos y transformaciones de los sistemas democráticos actuales.",
@@ -543,7 +544,7 @@ Future<void> loadProducts() async {
   String emancipaciondf = await getPdfUrl('emancipacion_del_Indio.pdf');
   all.add(
     Producto(
-      id: "emancipacion_del_Indio",
+      id: "H08",
       title: "Emancipación del indio",
       description:
           "Una reflexión sobre los retos y transformaciones de los sistemas democráticos actuales.",
@@ -561,7 +562,7 @@ Future<void> loadProducts() async {
   String beneficienciapdf = await getPdfUrl('Estatuto_de_la_beneficiencia_China.pdf');
   all.add(
     Producto(
-      id: "Estatuto_de_la_beneficiencia_China",
+      id: "H09",
       title: "Estatuto de la beneficiencia china",
       description:
           "Una reflexión sobre los retos y transformaciones de los sistemas democráticos actuales.",
@@ -579,7 +580,7 @@ Future<void> loadProducts() async {
   String inmigracionpdf = await getPdfUrl('inmigracion_de_Chinos.pdf');
   all.add(
     Producto(
-      id: "inmigracion_de_Chinos",
+      id: "H10",
       title: "Inmigración de chinos",
       description:
           "Una reflexión sobre los retos y transformaciones de los sistemas democráticos actuales.",
@@ -597,7 +598,7 @@ Future<void> loadProducts() async {
   String cosmografiapdf = await getPdfUrl('La_cosmografia_de_Pedro_Apiano.pdf');
   all.add(
     Producto(
-      id: "La_cosmografia_de_Pedro_Apiano",
+      id: "H11",
       title: "La cosmografia de Pedro Apiano",
       description:
           "Una reflexión sobre los retos y transformaciones de los sistemas democráticos actuales.",
@@ -615,7 +616,7 @@ Future<void> loadProducts() async {
   String museopdf = await getPdfUrl('Museo_de_Historia_Nacional.pdf');
   all.add(
     Producto(
-      id: "Museo_de_Historia_Nacional",
+      id: "H12",
       title: "Museo de historia nacional",
       description:
           "Una reflexión sobre los retos y transformaciones de los sistemas democráticos actuales.",
@@ -633,7 +634,7 @@ Future<void> loadProducts() async {
   String sistemapdf = await getPdfUrl('Nuevo_Sistema_de_Volar_Por_Los Aires.pdf');
   all.add(
     Producto(
-      id: "Nuevo_Sistema_de_Volar_Por_Los Aires",
+      id: "H13",
       title: "Nuevo sistema de volar por los aires",
       description:
           "Una reflexión sobre los retos y transformaciones de los sistemas democráticos actuales.",
@@ -651,7 +652,7 @@ Future<void> loadProducts() async {
   String stpdf = await getPdfUrl('ST.pdf');
   all.add(
     Producto(
-      id: "ST",
+      id: "H14",
       title: "St",
       description:
           "Una reflexión sobre los retos y transformaciones de los sistemas democráticos actuales.",
@@ -671,7 +672,7 @@ Future<void> loadProducts() async {
   String cienciaPdf = await getPdfUrl('la-psicologia-del-dinero-morgan-housel.pdf');
   all.add(
     Producto(
-      id: "la-psicologia-del-dinero-morgan-housel",
+      id: "CTA01",
       title: "Avances Ciencia Moderna",
       description:
           "Un recorrido por los descubrimientos más importantes de la ciencia en el siglo XXI.",
@@ -689,7 +690,7 @@ Future<void> loadProducts() async {
   String antiguedadesPdf = await getPdfUrl('Antiguedades_peruanas.pdf');
   all.add(
     Producto(
-      id: "Antiguedades_peruanas",
+      id: "CTA02",
       title: "Antiguedades peruanas",
       description:
           "Un recorrido por los descubrimientos más importantes de la ciencia en el siglo XXI.",
@@ -707,7 +708,7 @@ Future<void> loadProducts() async {
   String filosofiaPdf = await getPdfUrl('Filosofia_y_arte.pdf');
   all.add(
     Producto(
-      id: "Filosofia_y_arte",
+      id: "CTA03",
       title: "Filosofia y arte",
       description:
           "Un recorrido por los descubrimientos más importantes de la ciencia en el siglo XXI.",
