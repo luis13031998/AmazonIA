@@ -45,7 +45,13 @@ class AppImages {
   static const String teashop = '${basePath}tea-shop.png';
   static const String todosloslugares = '${basePath}lugaressecretos.png';
   static const String perfilNino = '${basePath}perfilnino.png';
+
+  //IMAGENES LIBROS MATEMATICA
   static const String latrisecion = '${basePath}latrasiccion.png';
+  static const String resolvamos = '${basePath}resolvamos5.png';
+  static const String resolvamos1 = '${basePath}resolvamos4.png';
+  static const String resolvamos2 = '${basePath}resolvamos3.png';
+  static const String resolvamos3 = '${basePath}libropreparate.png';
 
   //IMAGENES LIBROS COMUNICACIÓN
   static const String recluta = '${basePath}recluta.png';
@@ -77,7 +83,7 @@ class AppImages {
   static const String librost = '${basePath}librost.png';
   static const String museo = '${basePath}museo.png';
   //IMAGENES LIBROS CTA
-  static const String avances = '${basePath}ciencia.png';
-  static const String antiguedades = '${basePath}antiguedades.png';
-  static const String filosofia = '${basePath}filosofia.png';
+  static const String cta2dooo = '${basePath}cta2do.png';
+  static const String fisicasecu = '${basePath}fisica5to.png';
+  static const String quimicasecu = '${basePath}quimicasecu.png';
 }

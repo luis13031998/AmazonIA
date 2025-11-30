@@ -117,7 +117,7 @@ Map<String, List<Producto>> categorias = {};
 /// 🔹 CARGAR PRODUCTOS DESDE FIREBASE Y AGRUPARLOS
 Future<void> loadProducts() async {
   all.clear();
-  // --- Ejemplo 2: Matemática ---
+  // --- Ejemplo 1: Matemática ---
   String laTriseccion = await getPdfUrl('La_triseccion_del_angulo.pdf');
   all.add(
     Producto(
@@ -130,9 +130,81 @@ Future<void> loadProducts() async {
       seller: "Patricio del Rio",
       category: "Matematica",
       review: "(320 reviews)",
-      rate: 3.8,
+      rate: 3,
       quantity: 1,
       pdfUrl: laTriseccion,
+    ),
+  );
+  // --- Ejemplo 2: Matemática ---
+  String mateSecundaria = await getPdfUrl('Resolvamos.pdf');
+  all.add(
+    Producto(
+      id: "M02",
+      title: "Resolvamos problemas 5to de Secundaria",
+      description:
+          "Cuaderno de trabajo empleado para el quinto grado de Educación Secundaria para el año 2020.",
+      image: AppImages.resolvamos,
+      colors: [Colors.yellow],
+      seller: "Patricio del Rio",
+      category: "Matematica",
+      review: "(320 reviews)",
+      rate: 4,
+      quantity: 1,
+      pdfUrl: mateSecundaria,
+    ),
+  );
+  // --- Ejemplo 3: Matemática ---
+  String mateSecundaria1 = await getPdfUrl('Resolvamos1.pdf');
+  all.add(
+    Producto(
+      id: "M03",
+      title: "Resolvamos problemas 4to de Secundaria",
+      description:
+          "Cuaderno de trabajo empleado para el quinto grado de Educación Secundaria para el año 2020.",
+      image: AppImages.resolvamos1,
+      colors: [Colors.yellow],
+      seller: "Patricio del Rio",
+      category: "Matematica",
+      review: "(320 reviews)",
+      rate: 5,
+      quantity: 1,
+      pdfUrl: mateSecundaria1,
+    ),
+  );
+  // --- Ejemplo 4: Matemática ---
+  String mateSecundaria2 = await getPdfUrl('Resolvamos2.pdf');
+  all.add(
+    Producto(
+      id: "M04",
+      title: "Resolvamos problemas 3to de Secundaria",
+      description:
+          "Cuaderno de trabajo empleado para el quinto grado de Educación Secundaria para el año 2020.",
+      image: AppImages.resolvamos2,
+      colors: [Colors.yellow],
+      seller: "Patricio del Rio",
+      category: "Matematica",
+      review: "(320 reviews)",
+      rate: 4,
+      quantity: 1,
+      pdfUrl: mateSecundaria2,
+    ),
+  );
+  // --- Ejemplo 5: Matemática ---
+  String mateSecundaria3 = await getPdfUrl('libropreparate.pdf');
+  all.add(
+    Producto(
+      id: "M04",
+      title: "Razonamiento Matematico",
+      description:
+          "Este Curso de Razonamiento Matemático es un producto desarrollado por el Programa Nacional de Becas y Crédito Educativo (Pronabec)",
+      image: AppImages.resolvamos3,
+      colors: [Colors.yellow],
+      seller: "Patricio del Rio",
+      category: "Matematica",
+      review: "(320 reviews)",
+      rate: 5,
+      quantity: 1,
+      pdfUrl: mateSecundaria3,
     ),
   );
 
@@ -669,57 +741,57 @@ Future<void> loadProducts() async {
 
 
   // --- Ejemplo 5: CTA ---
-  String cienciaPdf = await getPdfUrl('la-psicologia-del-dinero-morgan-housel.pdf');
+  String ctapdf = await getPdfUrl('cta2do.pdf');
   all.add(
     Producto(
       id: "CTA01",
-      title: "Avances Ciencia Moderna",
+      title: "Ciencia, Tecnologia y Ambiente",
       description:
           "Un recorrido por los descubrimientos más importantes de la ciencia en el siglo XXI.",
-      image: AppImages.avances,
+      image: AppImages.cta2dooo,
       colors: [Colors.yellow],
       seller: "Dr. Julio Navarro",
       category: "CTA",
       review: "(280 reviews)",
       rate: 4.9,
       quantity: 1,
-      pdfUrl: cienciaPdf,
+      pdfUrl: ctapdf,
     ),
   );
   // --- Libro CTA 2 ---
-  String antiguedadesPdf = await getPdfUrl('Antiguedades_peruanas.pdf');
+  String fisicapdf = await getPdfUrl('fisica5to.pdf');
   all.add(
     Producto(
       id: "CTA02",
-      title: "Antiguedades peruanas",
+      title: "Fisica 5to Secundaria",
       description:
           "Un recorrido por los descubrimientos más importantes de la ciencia en el siglo XXI.",
-      image: AppImages.antiguedades,
+      image: AppImages.fisicasecu,
       colors: [Colors.yellow],
       seller: "Dr. Julio Navarro",
       category: "CTA",
       review: "(280 reviews)",
       rate: 4.9,
       quantity: 1,
-      pdfUrl: antiguedadesPdf,
+      pdfUrl: fisicapdf,
     ),
   );
   // --- Libro CTA 3 ---
-  String filosofiaPdf = await getPdfUrl('Filosofia_y_arte.pdf');
+  String quimicapdf = await getPdfUrl('quimicasecun.pdf');
   all.add(
     Producto(
       id: "CTA03",
-      title: "Filosofia y arte",
+      title: "Quimica",
       description:
           "Un recorrido por los descubrimientos más importantes de la ciencia en el siglo XXI.",
-      image: AppImages.filosofia,
+      image: AppImages.quimicasecu,
       colors: [Colors.yellow],
       seller: "Dr. Julio Navarro",
       category: "CTA",
       review: "(280 reviews)",
       rate: 4.9,
       quantity: 1,
-      pdfUrl: filosofiaPdf,
+      pdfUrl: quimicapdf,
     ),
   );
 
